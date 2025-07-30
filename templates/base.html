@@ -3,309 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ELECTORI - Simulacija političkih izbora">
-    <meta name="author" content="ELECTORI Team">
+    <title>{% block title %}ELECTORI - Simulacija Političkih Izbora{% endblock %}</title>
     
-    <title>{% if title %}{{ title }} - {% endif %}ELECTORI</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    
-    <!-- Main CSS -->
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
-    <!-- Page-specific CSS -->
-    {% block styles %}{% endblock %}
-    
-    <!-- Chart.js for future use -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation Header -->
-    <header class="navbar">
-        <nav class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="navbar-content">
-                        <div class="navbar-brand">
-                            <a href="{{ url_for('index') }}">
-                                <h2 class="mb-0 text-primary">🏛️ ELECTORI</h2>
-                            </a>
-                        </div>
-                        
-                        {% if active_simulation_id %}
-                        <div class="navbar-nav">
-                            <a href="{{ url_for('dashboard') }}" class="nav-link" data-page="dashboard">
-                                📊 Dashboard
-                            </a>
-                            <a href="#" class="nav-link" data-page="parties">
-                                🎯 Partije
-                            </a>
-                            <a href="#" class="nav-link" data-page="cities">
-                                🏙️ Gradovi
-                            </a>
-                            <a href="#" class="nav-link" data-page="elections">
-                                🗳️ Izbori
-                            </a>
-                            <a href="#" class="nav-link" data-page="parliament">
-                                🏛️ Parlament
-                            </a>
-                        </div>
-                        
-                        <div class="navbar-actions">
-                            <span class="simulation-indicator">
-                                Aktivna simulacija: <strong id="simulation-name">Loading...</strong>
-                            </span>
-                            <button class="btn btn-outline-primary btn-sm" onclick="ELECTORI.ui.showSimulationManager()">
-                                Promeni simulaciju
-                            </button>
-                        </div>
-                        {% else %}
-                        <div class="navbar-nav">
-                            <a href="{{ url_for('index') }}" class="nav-link">
-                                🏠 Početna
-                            </a>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-    
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Alert Container for dynamic alerts -->
-            <div id="alert-container"></div>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-vote-yea"></i>
+                ELECTORI
+            </a>
             
-            <!-- Page Content -->
-            {% block content %}{% endblock %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/simulation-manager">
+                            <i class="fas fa-globe"></i> Simulacije
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/city-manager">
+                            <i class="fas fa-city"></i> Gradovi
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/party-manager">
+                            <i class="fas fa-users"></i> Partije
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/elections">
+                            <i class="fas fa-vote-yea"></i> Izbori
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/parliament">
+                            <i class="fas fa-landmark"></i> Parlament
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="activeSimulationDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe"></i>
+                            <span id="active-simulation-display">Nema aktivne simulacije</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/simulation-manager">Promeni simulaciju</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="export-simulation">Izvezi simulaciju</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
+    </nav>
+
+    <!-- Alert container -->
+    <div id="alert-container" class="container-fluid mt-3">
+        <!-- Dinamički alerts -->
+    </div>
+
+    <!-- Main content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
     </main>
-    
+
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer bg-dark text-light mt-5">
         <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="footer-content">
-                        <p class="text-center text-muted mb-0">
-                            &copy; 2025 ELECTORI - Simulacija Političkih Izbora | 
-                            <span id="app-version">v1.0.0</span>
-                        </p>
-                    </div>
+            <div class="row py-4">
+                <div class="col-md-6">
+                    <h5>ELECTORI</h5>
+                    <p>Simulacija političkih izbora i parlamentarnog sistema.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2025 ELECTORI. Sva prava zadržana.</p>
                 </div>
             </div>
         </div>
     </footer>
-    
-    <!-- Loading Modal Template -->
-    <div id="loading-modal" class="modal" style="display: none;">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-body text-center">
-                    <div class="spinner mb-3"></div>
-                    <p id="loading-message">Učitavanje...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Confirmation Modal Template -->
-    <div id="confirm-modal" class="modal" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirm-title">Potvrda</h5>
-                </div>
-                <div class="modal-body">
-                    <p id="confirm-message"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="ELECTORI.ui.hideConfirmModal(false)">
-                        Otkaži
-                    </button>
-                    <button type="button" class="btn btn-primary" onclick="ELECTORI.ui.hideConfirmModal(true)">
-                        Potvrdi
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Main JavaScript -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Main JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     
-    <!-- Page-specific JavaScript -->
-    {% block scripts %}{% endblock %}
-    
-    <!-- Initialize page-specific functionality -->
-    <script>
-        // Set active simulation info if available
-        {% if active_simulation_id %}
-        ELECTORI.state.activeSimulationId = {{ active_simulation_id }};
-        
-        // Load simulation name
-        document.addEventListener('DOMContentLoaded', function() {
-            ELECTORI.api.get('/simulations/' + {{ active_simulation_id }})
-                .then(simulation => {
-                    const nameElement = document.getElementById('simulation-name');
-                    if (nameElement) {
-                        nameElement.textContent = simulation.name;
-                    }
-                })
-                .catch(error => {
-                    console.error('Failed to load simulation name:', error);
-                });
-        });
-        {% endif %}
-        
-        // Set current page
-        {% if request.endpoint %}
-        ELECTORI.state.currentPage = '{{ request.endpoint }}';
-        {% endif %}
-    </script>
-    
-    <style>
-        /* Additional header styles */
-        .navbar {
-            background-color: var(--white);
-            border-bottom: var(--border-width) solid var(--border-color);
-            padding: var(--spacing-md) 0;
-            margin-bottom: var(--spacing-lg);
-        }
-        
-        .navbar-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        
-        .navbar-brand a {
-            text-decoration: none;
-        }
-        
-        .navbar-nav {
-            display: flex;
-            gap: var(--spacing-lg);
-        }
-        
-        .nav-link {
-            color: var(--text-color);
-            text-decoration: none;
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--border-radius);
-            transition: all 0.15s ease-in-out;
-        }
-        
-        .nav-link:hover {
-            background-color: var(--bg-color);
-            text-decoration: none;
-        }
-        
-        .navbar-actions {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-        
-        .simulation-indicator {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-        
-        .main-content {
-            min-height: calc(100vh - 140px);
-            padding-bottom: var(--spacing-xl);
-        }
-        
-        .footer {
-            background-color: var(--bg-color);
-            border-top: var(--border-width) solid var(--border-color);
-            padding: var(--spacing-lg) 0;
-            margin-top: var(--spacing-xl);
-        }
-        
-        /* Responsive navbar */
-        @media (max-width: 768px) {
-            .navbar-content {
-                flex-direction: column;
-                gap: var(--spacing-md);
-            }
-            
-            .navbar-nav {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: var(--spacing-sm);
-            }
-            
-            .navbar-actions {
-                flex-direction: column;
-                gap: var(--spacing-sm);
-                text-align: center;
-            }
-        }
-        
-        /* Modal improvements */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1050;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-dialog {
-            max-width: 500px;
-            width: 100%;
-            margin: var(--spacing-md);
-        }
-        
-        .modal-content {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow-lg);
-        }
-        
-        .modal-header {
-            padding: var(--spacing-lg);
-            border-bottom: var(--border-width) solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .modal-body {
-            padding: var(--spacing-lg);
-        }
-        
-        .modal-footer {
-            padding: var(--spacing-lg);
-            border-top: var(--border-width) solid var(--border-color);
-            display: flex;
-            gap: var(--spacing-sm);
-            justify-content: flex-end;
-        }
-        
-        .btn-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0;
-            color: var(--text-muted);
-        }
-        
-        .btn-close:hover {
-            color: var(--text-color);
-        }
-    </style>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

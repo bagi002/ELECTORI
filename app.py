@@ -96,6 +96,27 @@ def create_app(config_name=None):
         seed_database()
         print('Database seeded with sample data.')
     
+    # Task 2 Frontend Routes
+    @app.route("/simulation-manager")
+    def simulation_manager():
+        """Simulation manager page."""
+        return render_template("simulation_manager.html")
+    
+    @app.route("/city-manager")
+    def city_manager():
+        """City manager page."""
+        return render_template("city_manager.html")
+    
+    @app.route("/party-manager")
+    def party_manager():
+        """Party manager page."""
+        return render_template("party_manager.html")
+    
+    @app.route("/party-profile")
+    def party_profile():
+        """Party profile page."""
+        return render_template("party_profile.html")
+    
     return app
 
 

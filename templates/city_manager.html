@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+
+{% block title %}Upravljanje gradovima - ELECTORI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+.city-manager {
+    padding: 2rem 1rem;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 200px);
+}
+
+.city-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.city-table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.table-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: between;
+    align-items: center;
+}
+
+.search-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.city-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.city-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.city-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.city-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.city-population {
+    color: #007bff;
+    font-weight: 500;
+}
+
+.city-stats {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.city-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.empty-cities {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+.empty-cities i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    .search-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .city-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .city-stats {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .city-actions {
+        justify-content: stretch;
+    }
+    
+    .city-actions .btn {
+        flex: 1;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="city-manager">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="manager-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h2><i class="fas fa-city"></i> Upravljanje gradovima</h2>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" id="add-city-btn">
+                        <i class="fas fa-plus"></i> Dodaj grad
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="city-stats-grid">
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-city"></i>
+                </div>
+                <div class="stats-content">
+                    <h3 id="total-cities-count">0</h3>
+                    <p>Ukupno gradova</p>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stats-content">
+                    <h3 id="total-population">0</h3>
+                    <p>Ukupna populacija</p>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stats-content">
+                    <h3 id="average-population">0</h3>
+                    <p>Prosečna populacija</p>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="stats-content">
+                    <h3 id="largest-city">-</h3>
+                    <p>Najveći grad</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and controls -->
+        <div class="search-controls">
+            <div class="input-group" style="max-width: 300px;">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" class="form-control" id="search-cities" placeholder="Pretraži gradove...">
+            </div>
+            <select class="form-select" id="sort-cities" style="max-width: 200px;">
+                <option value="name">Sortiraj po imenu</option>
+                <option value="population-desc">Populacija (opadajuće)</option>
+                <option value="population-asc">Populacija (rastuce)</option>
+            </select>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="show-coordinates">
+                <label class="form-check-label" for="show-coordinates">
+                    Prikaži koordinate
+                </label>
+            </div>
+        </div>
+
+        <!-- Cities list -->
+        <div class="city-table-container">
+            <div class="table-header">
+                <h4><i class="fas fa-list"></i> Lista gradova</h4>
+                <span id="cities-count-display">0 gradova</span>
+            </div>
+            <div id="cities-list" class="p-3">
+                <!-- Dinamički sadržaj -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal za dodavanje/editovanje grada -->
+<div class="modal fade" id="cityModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cityModalTitle">Dodaj grad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="city-form">
+                    <input type="hidden" id="city-id">
+                    <div class="mb-3">
+                        <label for="city-name" class="form-label">Naziv grada</label>
+                        <input type="text" class="form-control" id="city-name" required>
+                        <div class="form-text">Unesite jedinstveno ime grada (do 50 karaktera)</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="city-population" class="form-label">Broj stanovnika</label>
+                        <input type="number" class="form-control" id="city-population" 
+                               min="100" max="10000000" required>
+                        <div class="form-text">Između 100 i 10,000,000 stanovnika</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="city-coordinates-x" class="form-label">Koordinata X (opciono)</label>
+                            <input type="number" class="form-control" id="city-coordinates-x" 
+                                   step="0.01" min="-180" max="180">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="city-coordinates-y" class="form-label">Koordinata Y (opciono)</label>
+                            <input type="number" class="form-control" id="city-coordinates-y" 
+                                   step="0.01" min="-90" max="90">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="button" class="btn btn-primary" id="save-city-btn">Sačuvaj</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal za brisanje grada -->
+<div class="modal fade" id="deleteCityModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Potvrda brisanja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Da li ste sigurni da želite da obrišete grad <strong id="delete-city-name"></strong>?</p>
+                <p class="text-danger">Ova akcija će takođe obrisati i svu podršku partija u ovom gradu.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete-city-btn">Obriši</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/city_manager.js') }}"></script>
+{% endblock %}

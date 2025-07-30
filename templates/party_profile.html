@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}Profil partije - ELECTORI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/party.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="party-profile">
+    <div class="container">
+        <!-- Party Header -->
+        <div class="party-header-card">
+            <div class="party-color-bar" id="party-color-bar"></div>
+            <div class="party-header-content">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="party-name" id="party-name">Naziv partije</h1>
+                        <div class="party-metadata">
+                            <span class="ideology-badge" id="party-ideology">Ideologija</span>
+                            <span class="leader-info">
+                                <i class="fas fa-user"></i>
+                                <span id="party-leader">Lider partije</span>
+                            </span>
+                            <span class="founded-info" id="party-founded-info" style="display: none;">
+                                <i class="fas fa-calendar"></i>
+                                <span id="party-founded">Datum osnivanja</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <div class="party-actions">
+                            <button class="btn btn-outline-primary" id="edit-party-btn">
+                                <i class="fas fa-edit"></i> Uredi
+                            </button>
+                            <button class="btn btn-outline-secondary" id="back-to-list-btn">
+                                <i class="fas fa-arrow-left"></i> Nazad
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Party Description -->
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="party-info-card">
+                    <h3><i class="fas fa-info-circle"></i> Opis partije</h3>
+                    <p id="party-description">Nema opisa partije.</p>
+                </div>
+
+                <!-- Support by City -->
+                <div class="party-info-card">
+                    <h3><i class="fas fa-city"></i> Podrška po gradovima</h3>
+                    <div id="city-support-list">
+                        <!-- Dinamički sadržaj -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <!-- Quick Stats -->
+                <div class="party-stats-card">
+                    <h3><i class="fas fa-chart-bar"></i> Statistike</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Prosečna podrška</span>
+                        <span class="stat-value" id="average-support">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Ukupno gradova</span>
+                        <span class="stat-value" id="cities-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Najjači grad</span>
+                        <span class="stat-value" id="strongest-city">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Najslabiji grad</span>
+                        <span class="stat-value" id="weakest-city">-</span>
+                    </div>
+                </div>
+
+                <!-- Chart placeholder -->
+                <div class="party-chart-card">
+                    <h3><i class="fas fa-chart-pie"></i> Raspored podrške</h3>
+                    <div id="support-chart">
+                        <p class="text-muted text-center">Grafikon će biti dostupan u sledećoj fazi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script>
+// Party profile functionality
+class PartyProfile {
+    constructor() {
+        this.partyId = this.getPartyIdFromUrl();
+        this.party = null;
+        this.supportData = null;
+        this.init();
+    }
+
+    getPartyIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return parseInt(urlParams.get('id'));
+    }
+
+    async init() {
+        if (!this.partyId) {
+            UIUtils.showAlert('Nevaljan ID partije', 'danger');
+            window.location.href = '/party-manager';
+            return;
+        }
+
+        await this.loadPartyData();
+        this.setupEventListeners();
+    }
+
+    async loadPartyData() {
+        try {
+            UIUtils.showLoader(document.querySelector('.party-profile'));
+
+            const [party, supportData] = await Promise.all([
+                API.getParty(this.partyId),
+                API.getPartySupport(this.partyId)
+            ]);
+
+            this.party = party;
+            this.supportData = supportData;
+
+            this.renderPartyInfo();
+            this.renderSupportData();
+
+        } catch (error) {
+            console.error('Error loading party data:', error);
+            UIUtils.showAlert('Greška pri učitavanju podataka partije', 'danger');
+            window.location.href = '/party-manager';
+        } finally {
+            UIUtils.hideLoader(document.querySelector('.party-profile'));
+        }
+    }
+
+    renderPartyInfo() {
+        if (!this.party) return;
+
+        document.getElementById('party-name').textContent = this.party.name;
+        document.getElementById('party-ideology').textContent = this.getIdeologyLabel(this.party.ideology);
+        document.getElementById('party-leader').textContent = this.party.leader_name;
+        
+        if (this.party.founded_date) {
+            document.getElementById('party-founded').textContent = UIUtils.formatDate(this.party.founded_date);
+            document.getElementById('party-founded-info').style.display = 'inline';
+        }
+
+        if (this.party.description) {
+            document.getElementById('party-description').textContent = this.party.description;
+        }
+
+        // Set party color
+        const colorBar = document.getElementById('party-color-bar');
+        colorBar.style.backgroundColor = this.party.color;
+
+        const ideologyBadge = document.getElementById('party-ideology');
+        ideologyBadge.style.backgroundColor = this.party.color;
+
+        document.title = `${this.party.name} - ELECTORI`;
+    }
+
+    renderSupportData() {
+        if (!this.supportData) return;
+
+        const supportList = document.getElementById('city-support-list');
+        const support = this.supportData.support_data || [];
+
+        if (support.length === 0) {
+            supportList.innerHTML = '<p class="text-muted">Nema podataka o podršci u gradovima.</p>';
+            return;
+        }
+
+        supportList.innerHTML = support.map(item => `
+            <div class="city-support-item">
+                <div class="city-name">${item.city_name}</div>
+                <div class="support-bar">
+                    <div class="support-fill" style="width: ${item.support_percentage}%; background-color: ${this.party.color}"></div>
+                    <span class="support-text">${item.support_percentage.toFixed(1)}%</span>
+                </div>
+            </div>
+        `).join('');
+
+        // Update statistics
+        this.updateStatistics(support);
+    }
+
+    updateStatistics(support) {
+        const avgSupport = this.supportData.average_support || 0;
+        document.getElementById('average-support').textContent = avgSupport.toFixed(1) + '%';
+        document.getElementById('cities-count').textContent = support.length;
+
+        if (support.length > 0) {
+            const strongest = support.reduce((max, city) => city.support_percentage > max.support_percentage ? city : max);
+            const weakest = support.reduce((min, city) => city.support_percentage < min.support_percentage ? city : min);
+
+            document.getElementById('strongest-city').textContent = `${strongest.city_name} (${strongest.support_percentage.toFixed(1)}%)`;
+            document.getElementById('weakest-city').textContent = `${weakest.city_name} (${weakest.support_percentage.toFixed(1)}%)`;
+        }
+    }
+
+    getIdeologyLabel(ideology) {
+        const labels = {
+            'levi': 'Levi',
+            'centar-levi': 'Centar-levi',
+            'centar': 'Centar',
+            'centar-desni': 'Centar-desni',
+            'desni': 'Desni'
+        };
+        return labels[ideology] || ideology;
+    }
+
+    setupEventListeners() {
+        document.getElementById('back-to-list-btn').addEventListener('click', () => {
+            window.location.href = '/party-manager';
+        });
+
+        document.getElementById('edit-party-btn').addEventListener('click', () => {
+            window.location.href = `/party-manager?edit=${this.partyId}`;
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    new PartyProfile();
+});
+</script>
+{% endblock %}

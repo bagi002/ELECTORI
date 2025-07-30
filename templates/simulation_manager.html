@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Upravljanje simulacijama - ELECTORI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/simulation.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="simulation-manager">
+    <div class="container-fluid">
+        <!-- Header sa dugmićima -->
+        <div class="manager-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h2><i class="fas fa-globe"></i> Upravljanje simulacijama</h2>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" id="create-simulation-btn">
+                        <i class="fas fa-plus"></i> Nova simulacija
+                    </button>
+                    <button class="btn btn-secondary" id="import-simulation-btn">
+                        <i class="fas fa-upload"></i> Uvezi
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista simulacija -->
+        <div class="simulations-grid" id="simulations-grid">
+            <!-- Dinamički sadržaj -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal za kreiranje simulacije -->
+<div class="modal fade" id="createSimulationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Kreiranje nove simulacije</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="create-simulation-form">
+                    <div class="mb-3">
+                        <label for="simulation-name" class="form-label">Naziv simulacije</label>
+                        <input type="text" class="form-control" id="simulation-name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="country-name" class="form-label">Naziv države</label>
+                        <input type="text" class="form-control" id="country-name" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="button" class="btn btn-primary" id="save-simulation-btn">Kreiraj</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal za brisanje simulacije -->
+<div class="modal fade" id="deleteSimulationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Potvrda brisanja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Da li ste sigurni da želite da obrišete simulaciju <strong id="delete-simulation-name"></strong>?</p>
+                <p class="text-danger">Ova akcija se ne može poništiti.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete-btn">Obriši</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden file input za import -->
+<input type="file" id="import-file-input" accept=".json" style="display: none;">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/simulation_manager.js') }}"></script>
+{% endblock %}
