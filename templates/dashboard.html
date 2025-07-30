@@ -8,6 +8,41 @@
 
 {% block content %}
 <div class="dashboard-container">
+    <!-- Simulation Focus Header -->
+    {% if ui_state.has_active_simulation %}
+    <div class="simulation-focus-header mb-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="mb-1">
+                            <i class="fas fa-globe me-2"></i>
+                            <span id="active-simulation-name">Učitava se...</span>
+                        </h4>
+                        <p class="mb-0">Trenutno radite u ovoj simulaciji</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="/simulation-manager" class="btn btn-light">
+                            <i class="fas fa-list"></i> Promeni simulaciju
+                        </a>
+                        <button class="btn btn-outline-light ms-2" id="exit-simulation">
+                            <i class="fas fa-sign-out-alt"></i> Izađi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-simulation-warning mb-4">
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Nema aktivne simulacije.</strong> 
+            <a href="/simulation-manager" class="alert-link">Izaberite ili kreirajte simulaciju</a> da biste počeli.
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Header sa statistikama -->
     <div class="dashboard-header">
         <div class="row">
@@ -17,8 +52,10 @@
                         <i class="fas fa-globe"></i>
                     </div>
                     <div class="stats-content">
-                        <h3 id="active-simulation-name">Nema aktivne simulacije</h3>
-                        <p>Aktivna simulacija</p>
+                        <h3 id="simulation-status">
+                            {% if ui_state.has_active_simulation %}Aktivna{% else %}Neaktivna{% endif %}
+                        </h3>
+                        <p>Simulacija</p>
                     </div>
                 </div>
             </div>
@@ -69,6 +106,17 @@
                     </div>
                     <div class="card-body">
                         <div id="activity-timeline">
+                            {% if ui_state.has_active_simulation %}
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-play-circle text-success"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p>Simulacija je aktivna</p>
+                                    <small class="text-muted">Možete upravljati gradovima i partijama.</small>
+                                </div>
+                            </div>
+                            {% else %}
                             <div class="activity-item">
                                 <div class="activity-icon">
                                     <i class="fas fa-info-circle"></i>
@@ -78,6 +126,7 @@
                                     <small class="text-muted">Kreirajte novu simulaciju da počnete.</small>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -95,17 +144,34 @@
                                 <i class="fas fa-cogs"></i>
                                 <span>Upravljaj simulacijama</span>
                             </a>
-                            <a href="/city-manager" class="quick-action-btn" id="manage-cities">
+                            {% if ui_state.has_active_simulation %}
+                            <a href="/city-manager" class="quick-action-btn{% if not ui_state.navigation.cities %} disabled{% endif %}" 
+                               id="manage-cities"
+                               {% if not ui_state.navigation.cities %}onclick="return false;" title="Upravljanje gradovima trenutno nije dostupno"{% endif %}>
                                 <i class="fas fa-city"></i>
                                 <span>Upravljaj gradovima</span>
                             </a>
-                            <a href="/party-manager" class="quick-action-btn" id="manage-parties">
+                            <a href="/party-manager" class="quick-action-btn{% if not ui_state.navigation.parties %} disabled{% endif %}" 
+                               id="manage-parties"
+                               {% if not ui_state.navigation.parties %}onclick="return false;" title="Upravljanje partijama trenutno nije dostupno"{% endif %}>
                                 <i class="fas fa-users"></i>
                                 <span>Upravljaj partijama</span>
                             </a>
-                            <button class="quick-action-btn" id="create-election">
-                                <i class="fas fa-vote-yea"></i>
-                                <span>Kreiraj izbore</span>
+                            {% else %}
+                            <div class="quick-action-btn disabled" title="Izaberite simulaciju da biste upravljali gradovima">
+                                <i class="fas fa-city text-muted"></i>
+                                <span class="text-muted">Upravljaj gradovima</span>
+                            </div>
+                            <div class="quick-action-btn disabled" title="Izaberite simulaciju da biste upravljali partijama">
+                                <i class="fas fa-users text-muted"></i>
+                                <span class="text-muted">Upravljaj partijama</span>
+                            </div>
+                            {% endif %}
+                            <button class="quick-action-btn disabled" id="create-election" 
+                                    title="Izbori će biti dostupni u budućoj verziji">
+                                <i class="fas fa-vote-yea text-muted"></i>
+                                <span class="text-muted">Kreiraj izbore</span>
+                                <small class="badge bg-warning ms-1">Uskoro</small>
                             </button>
                         </div>
                     </div>
@@ -114,11 +180,30 @@
                 <!-- Upozorenja -->
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h4><i class="fas fa-exclamation-triangle"></i> Upozorenja</h4>
+                        <h4><i class="fas fa-exclamation-triangle"></i> Status funkcionalnosti</h4>
                     </div>
                     <div class="card-body">
                         <div id="warnings-list">
-                            <!-- Dinamički sadržaj -->
+                            <div class="alert alert-success alert-sm">
+                                <i class="fas fa-check-circle me-1"></i>
+                                <small>Simulacije: Implementirano</small>
+                            </div>
+                            <div class="alert alert-success alert-sm">
+                                <i class="fas fa-check-circle me-1"></i>
+                                <small>Gradovi: Implementirano</small>
+                            </div>
+                            <div class="alert alert-success alert-sm">
+                                <i class="fas fa-check-circle me-1"></i>
+                                <small>Partije: Implementirano</small>
+                            </div>
+                            <div class="alert alert-warning alert-sm">
+                                <i class="fas fa-clock me-1"></i>
+                                <small>Izbori: Uskoro</small>
+                            </div>
+                            <div class="alert alert-warning alert-sm">
+                                <i class="fas fa-clock me-1"></i>
+                                <small>Parlament: Uskoro</small>
+                            </div>
                         </div>
                     </div>
                 </div>
