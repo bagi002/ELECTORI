@@ -52,6 +52,11 @@ def create_app(config_name=None):
         """Dashboard page."""
         # Check if there's an active simulation in session
         active_simulation_id = session.get('active_simulation_id')
+        
+        # If no active simulation, redirect to simulation manager
+        if not active_simulation_id:
+            return redirect(url_for('simulation_manager'))
+            
         return render_template('dashboard.html', 
                              active_simulation_id=active_simulation_id)
     

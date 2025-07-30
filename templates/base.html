@@ -29,6 +29,8 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
+                    <!-- Dashboard - show only if there's an active simulation -->
+                    {% if ui_state.has_active_simulation %}
                     <li class="nav-item">
                         <a class="nav-link{% if not ui_state.navigation.dashboard %} disabled{% endif %}" 
                            href="{% if ui_state.navigation.dashboard %}/dashboard{% else %}#{% endif %}"
@@ -36,6 +38,10 @@
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
+                    {% endif %}
+                    
+                    <!-- Simulation Manager - show only if there's no active simulation -->
+                    {% if not ui_state.has_active_simulation %}
                     <li class="nav-item">
                         <a class="nav-link{% if not ui_state.navigation.simulations %} disabled{% endif %}" 
                            href="{% if ui_state.navigation.simulations %}/simulation-manager{% else %}#{% endif %}"
@@ -43,6 +49,7 @@
                             <i class="fas fa-globe"></i> Simulacije
                         </a>
                     </li>
+                    {% endif %}
                     <!-- City and Party management - show only if there's an active simulation -->
                     {% if ui_state.has_active_simulation %}
                     <li class="nav-item">
@@ -80,17 +87,20 @@
                 </ul>
                 
                 <ul class="navbar-nav">
+                    <!-- Active simulation dropdown - adjusted based on simulation state -->
+                    {% if ui_state.has_active_simulation %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="activeSimulationDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-globe"></i>
-                            <span id="active-simulation-display">Nema aktivne simulacije</span>
+                            <span id="active-simulation-display">Aktivna simulacija</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/simulation-manager">Promeni simulaciju</a></li>
+                            <li><a class="dropdown-item" href="/simulation-manager"><i class="fas fa-cog"></i> Menadžer simulacija</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" id="export-simulation">Izvezi simulaciju</a></li>
+                            <li><a class="dropdown-item" href="#" id="export-simulation"><i class="fas fa-download"></i> Izvezi simulaciju</a></li>
                         </ul>
                     </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

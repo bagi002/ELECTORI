@@ -275,7 +275,11 @@ class SimulationManager {
             await API.activateSimulation(simulationId);
             
             UIUtils.showAlert('Simulacija je uspešno aktivirana', 'success');
-            await this.loadSimulations();
+            
+            // Redirect to dashboard after successful activation
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1000); // Wait 1 second to show the success message
 
         } catch (error) {
             console.error('Error activating simulation:', error);
