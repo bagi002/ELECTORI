@@ -1,0 +1,395 @@
+/* Support Matrix CSS with Slider-focused Design */
+
+/* Main Container */
+.support-matrix-container {
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+}
+
+/* Slider Controls Panel */
+.card.border-primary {
+    border-width: 2px !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.15);
+}
+
+.card-header.bg-primary {
+    background: linear-gradient(90deg, #007bff, #0056b3) !important;
+}
+
+/* Slider Container */
+.slider-container {
+    position: relative;
+    margin-top: 0.5rem;
+}
+
+/* Enhanced Range Sliders */
+.form-range {
+    height: 8px;
+    background: transparent;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-range::-webkit-slider-track {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 10px;
+    border: none;
+}
+
+.form-range::-webkit-slider-thumb {
+    appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+    transition: all 0.2s ease;
+}
+
+.form-range::-webkit-slider-thumb:hover {
+    background: #0056b3;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.5);
+}
+
+.form-range::-moz-range-track {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 10px;
+    border: none;
+}
+
+.form-range::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Slider Color Variants */
+.slider-primary::-webkit-slider-thumb {
+    background: #007bff;
+}
+
+.slider-secondary::-webkit-slider-thumb {
+    background: #6c757d;
+}
+
+.slider-success::-webkit-slider-thumb {
+    background: #28a745;
+}
+
+.slider-warning::-webkit-slider-thumb {
+    background: #ffc107;
+}
+
+.slider-danger::-webkit-slider-thumb {
+    background: #dc3545;
+}
+
+/* Slider Output */
+.slider-output {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+/* Support Matrix Table */
+#supportMatrix {
+    font-size: 0.9rem;
+    border: none !important;
+}
+
+#supportMatrix .sticky-column {
+    position: sticky;
+    left: 0;
+    background: #ffffff;
+    z-index: 10;
+    min-width: 200px;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Party Header */
+.party-header {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+.party-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.party-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* City Header */
+.city-header {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.city-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.city-population {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+/* Support Input Container */
+.support-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    position: relative;
+}
+
+.support-slider {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.support-value {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+
+.support-status {
+    font-size: 0.75rem;
+    height: 1rem;
+}
+
+/* Support Cell States */
+.support-cell {
+    min-width: 120px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.support-cell:hover {
+    background-color: #f8f9fa;
+    box-shadow: inset 0 0 8px rgba(0, 123, 255, 0.1);
+}
+
+.support-cell.filtered-out {
+    opacity: 0.3;
+    background-color: #f8f9fa;
+}
+
+/* City Total */
+.city-total {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.total-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem;
+}
+
+.total-container.valid {
+    color: #28a745;
+}
+
+.total-container.invalid {
+    color: #dc3545;
+}
+
+.total-value {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.total-bar {
+    width: 60px;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.total-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745, #20c997);
+    transition: width 0.3s ease;
+}
+
+.total-container.invalid .total-fill {
+    background: linear-gradient(90deg, #dc3545, #c82333);
+}
+
+/* Status Cards */
+.card.border-success,
+.card.border-danger,
+.card.border-info,
+.card.border-warning {
+    border-width: 2px !important;
+    transition: all 0.3s ease;
+}
+
+.card.border-success:hover {
+    box-shadow: 0 0.5rem 1rem rgba(40, 167, 69, 0.15);
+}
+
+.card.border-danger:hover {
+    box-shadow: 0 0.5rem 1rem rgba(220, 53, 69, 0.15);
+}
+
+.card.border-info:hover {
+    box-shadow: 0 0.5rem 1rem rgba(23, 162, 184, 0.15);
+}
+
+.card.border-warning:hover {
+    box-shadow: 0 0.5rem 1rem rgba(255, 193, 7, 0.15);
+}
+
+/* Bulk Edit Modal */
+.modal-lg {
+    max-width: 800px;
+}
+
+.modal-header {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    color: white;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+/* Bulk Edit Preview */
+.alert-info {
+    border-left: 4px solid #17a2b8;
+    background: linear-gradient(90deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.05));
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .slider-container {
+        margin-bottom: 1rem;
+    }
+    
+    .support-input-container {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .party-header,
+    .city-header {
+        padding: 0.25rem;
+    }
+    
+    .city-name,
+    .party-name {
+        font-size: 0.8rem;
+    }
+    
+    .support-value {
+        font-size: 0.8rem;
+    }
+    
+    #supportMatrix .sticky-column {
+        min-width: 150px;
+    }
+}
+
+/* Animation Classes */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.support-cell {
+    animation: slideIn 0.3s ease;
+}
+
+/* Focus States for Accessibility */
+.form-range:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+.support-slider:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Tooltip Styles */
+.tooltip-inner {
+    background-color: #007bff;
+    border-radius: 6px;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: #007bff;
+}
+
+/* Print Styles */
+@media print {
+    .slider-container,
+    .btn-group {
+        display: none !important;
+    }
+    
+    .support-value {
+        font-size: 0.8rem !important;
+    }
+}
