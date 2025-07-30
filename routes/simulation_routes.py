@@ -159,3 +159,12 @@ def get_active_simulation():
         
     except Exception as e:
         return jsonify({'error': 'Greška pri dohvaćanju aktivne simulacije', 'details': str(e)}), 500
+
+@bp.route('/active', methods=['DELETE'])
+def clear_active_simulation():
+    """Clear active simulation from session"""
+    try:
+        session.pop('active_simulation_id', None)
+        return jsonify({'message': 'Aktivna simulacija je uklonjena iz sesije'})
+    except Exception as e:
+        return jsonify({'error': 'Greška pri uklanjanju aktivne simulacije', 'details': str(e)}), 500

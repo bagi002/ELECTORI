@@ -30,33 +30,51 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/dashboard">
+                        <a class="nav-link{% if not ui_state.navigation.dashboard %} disabled{% endif %}" 
+                           href="{% if ui_state.navigation.dashboard %}/dashboard{% else %}#{% endif %}"
+                           {% if not ui_state.navigation.dashboard %}onclick="return false;" title="Dashboard nije još uvek implementiran"{% endif %}>
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/simulation-manager">
+                        <a class="nav-link{% if not ui_state.navigation.simulations %} disabled{% endif %}" 
+                           href="{% if ui_state.navigation.simulations %}/simulation-manager{% else %}#{% endif %}"
+                           {% if not ui_state.navigation.simulations %}onclick="return false;" title="Upravljanje simulacijama nije još uvek implementirano"{% endif %}>
                             <i class="fas fa-globe"></i> Simulacije
                         </a>
                     </li>
+                    <!-- City and Party management - show only if there's an active simulation -->
+                    {% if ui_state.has_active_simulation %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/city-manager">
+                        <a class="nav-link{% if not ui_state.navigation.cities %} disabled{% endif %}" 
+                           href="{% if ui_state.navigation.cities %}/city-manager{% else %}#{% endif %}"
+                           {% if not ui_state.navigation.cities %}onclick="return false;" title="Upravljanje gradovima nije još uvek implementirano"{% endif %}>
                             <i class="fas fa-city"></i> Gradovi
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/party-manager">
+                        <a class="nav-link{% if not ui_state.navigation.parties %} disabled{% endif %}" 
+                           href="{% if ui_state.navigation.parties %}/party-manager{% else %}#{% endif %}"
+                           {% if not ui_state.navigation.parties %}onclick="return false;" title="Upravljanje partijama nije još uvek implementirano"{% endif %}>
                             <i class="fas fa-users"></i> Partije
                         </a>
                     </li>
+                    {% endif %}
+                    <!-- Advanced features - disabled until implemented -->
                     <li class="nav-item">
-                        <a class="nav-link" href="/elections">
-                            <i class="fas fa-vote-yea"></i> Izbori
+                        <a class="nav-link disabled" href="#" onclick="return false;" 
+                           title="Izbori će biti dostupni u budućoj verziji">
+                            <i class="fas fa-vote-yea text-muted"></i> 
+                            <span class="text-muted">Izbori</span>
+                            <small class="badge bg-warning ms-1">Uskoro</small>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/parliament">
-                            <i class="fas fa-landmark"></i> Parlament
+                        <a class="nav-link disabled" href="#" onclick="return false;" 
+                           title="Parlament će biti dostupan u budućoj verziji">
+                            <i class="fas fa-landmark text-muted"></i> 
+                            <span class="text-muted">Parlament</span>
+                            <small class="badge bg-warning ms-1">Uskoro</small>
                         </a>
                     </li>
                 </ul>

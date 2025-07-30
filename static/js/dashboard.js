@@ -197,6 +197,15 @@ class Dashboard {
     }
 
     setupEventListeners() {
+        // Exit simulation button
+        const exitSimulationBtn = document.getElementById('exit-simulation');
+        if (exitSimulationBtn) {
+            exitSimulationBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.exitSimulation();
+            });
+        }
+
         // Quick action buttons
         const manageSimulations = document.getElementById('manage-simulations');
         const manageCities = document.getElementById('manage-cities');
@@ -210,7 +219,7 @@ class Dashboard {
             });
         }
 
-        if (manageCities) {
+        if (manageCities && !manageCities.classList.contains('disabled')) {
             manageCities.addEventListener('click', async (e) => {
                 e.preventDefault();
                 const activeSimulation = await this.updateActiveSimulation();
@@ -222,7 +231,7 @@ class Dashboard {
             });
         }
 
-        if (manageParties) {
+        if (manageParties && !manageParties.classList.contains('disabled')) {
             manageParties.addEventListener('click', async (e) => {
                 e.preventDefault();
                 const activeSimulation = await this.updateActiveSimulation();
@@ -237,12 +246,7 @@ class Dashboard {
         if (createElection) {
             createElection.addEventListener('click', async (e) => {
                 e.preventDefault();
-                const activeSimulation = await this.updateActiveSimulation();
-                if (!activeSimulation) {
-                    UIUtils.showAlert('Prvo morate aktivirati simulaciju', 'warning');
-                    return;
-                }
-                UIUtils.showAlert('Kreiranje izbora će biti dostupno u sledećoj fazi', 'info');
+                UIUtils.showAlert('Kreiranje izbora će biti dostupno u budućoj verziji aplikacije', 'info');
             });
         }
 
@@ -253,6 +257,30 @@ class Dashboard {
                 e.preventDefault();
                 this.exportActiveSimulation();
             });
+        }
+    }
+
+    async exitSimulation() {
+        try {
+            if (confirm('Da li ste sigurni da želite da izađete iz trenutne simulacije?')) {
+                // Clear active simulation from session
+                await fetch('/api/simulations/active', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                UIUtils.showAlert('Izašli ste iz simulacije', 'success');
+                
+                // Redirect to simulation manager
+                setTimeout(() => {
+                    window.location.href = '/simulation-manager';
+                }, 1000);
+            }
+        } catch (error) {
+            console.error('Error exiting simulation:', error);
+            UIUtils.showAlert('Greška pri izlaska iz simulacije', 'danger');
         }
     }
 

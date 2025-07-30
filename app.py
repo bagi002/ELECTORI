@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, jsonify, request, session
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 from flask_cors import CORS
 from config import config
 from extensions import db, migrate
@@ -31,7 +31,20 @@ def create_app(config_name=None):
     # Main routes
     @app.route('/')
     def index():
-        """Main application page."""
+        """Main application page - redirect to most functional page."""
+        # Check if there's an active simulation in session
+        active_simulation_id = session.get('active_simulation_id')
+        
+        if active_simulation_id:
+            # If there's an active simulation, go to dashboard
+            return redirect(url_for('dashboard'))
+        else:
+            # If no active simulation, go to simulation manager to select/create one
+            return redirect(url_for('simulation_manager'))
+    
+    @app.route('/welcome')
+    def welcome():
+        """Welcome page for new users."""
         return render_template('index.html')
     
     @app.route('/dashboard')
@@ -81,6 +94,30 @@ def create_app(config_name=None):
                         request.get_json(force=True)
                 except Exception:
                     return jsonify({'error': 'Invalid JSON'}), 400
+    
+    @app.context_processor
+    def inject_ui_state():
+        """Inject UI state into all templates."""
+        try:
+            from utils.ui_state_manager import get_ui_context
+            return get_ui_context()
+        except Exception as e:
+            # Fallback if UI state manager fails
+            return {
+                'ui_state': {
+                    'navigation': {
+                        'dashboard': True,
+                        'simulations': True,
+                        'cities': True,
+                        'parties': True,
+                        'elections': False,
+                        'parliament': False
+                    },
+                    'active_simulation_id': session.get('active_simulation_id'),
+                    'show_simulation_list': True,
+                    'has_active_simulation': bool(session.get('active_simulation_id'))
+                }
+            }
     
     # CLI commands
     @app.cli.command()
