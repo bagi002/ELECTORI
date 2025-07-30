@@ -1,4 +1,10 @@
-# Models package for ELECTORI application
+"""
+Models package for ELECTORI application.
+
+This package contains all the SQLAlchemy models for the application.
+All models are properly initialized with the database instance from the Flask app.
+"""
+
 from .simulation import Simulation
 from .city import City
 from .party import Party, PartySupport
