@@ -1,13 +1,8 @@
 import os
 from flask import Flask, render_template, jsonify, request, session
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_cors import CORS
 from config import config
-
-# Initialize extensions
-db = SQLAlchemy()
-migrate = Migrate()
+from extensions import db, migrate
 
 
 def create_app(config_name=None):
@@ -25,8 +20,7 @@ def create_app(config_name=None):
     
     # Import models to ensure they are registered with SQLAlchemy
     # This must be done after db.init_app()
-    with app.app_context():
-        from models import simulation, city, party, election, parliament
+    from models import simulation, city, party, election, parliament
     
     # Register blueprints
     from routes import simulation_routes, city_routes, party_routes
@@ -76,6 +70,17 @@ def create_app(config_name=None):
         if request.path.startswith('/api'):
             return jsonify({'error': 'Bad request'}), 400
         return render_template('errors/400.html'), 400
+    
+    @app.before_request
+    def validate_json():
+        """Validate JSON in requests."""
+        if request.path.startswith('/api') and request.method in ['POST', 'PUT', 'PATCH']:
+            if request.content_type and 'application/json' in request.content_type:
+                try:
+                    if request.content_length and request.content_length > 0:
+                        request.get_json(force=True)
+                except Exception:
+                    return jsonify({'error': 'Invalid JSON'}), 400
     
     # CLI commands
     @app.cli.command()

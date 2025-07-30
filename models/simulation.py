@@ -3,7 +3,7 @@ from datetime import datetime
 import enum
 
 # Get db instance - will be set by Flask app
-from app import db
+from extensions import db
 
 
 class SimulationStatus(enum.Enum):
