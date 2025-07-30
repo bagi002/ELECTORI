@@ -1,6 +1,6 @@
 """City model for ELECTORI application."""
 from sqlalchemy.orm import validates
-from app import db
+from extensions import db
 
 
 class City(db.Model):

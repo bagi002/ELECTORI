@@ -2,7 +2,7 @@
 from sqlalchemy.orm import validates
 from datetime import datetime, date
 import enum
-from app import db
+from extensions import db
 
 
 class ParliamentType(enum.Enum):

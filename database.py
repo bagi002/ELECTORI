@@ -6,7 +6,8 @@ and set up all required tables for the application.
 """
 
 import os
-from app import create_app, db
+from app import create_app
+from extensions import db
 
 
 def init_database(app=None):

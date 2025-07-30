@@ -3,7 +3,7 @@ from sqlalchemy.orm import validates
 from datetime import datetime, date
 import enum
 import re
-from app import db
+from extensions import db
 
 
 class PartyIdeology(enum.Enum):
@@ -112,6 +112,13 @@ class Party(db.Model):
         """Get party support percentage in a specific city."""
         support = PartySupport.query.filter_by(party_id=self.id, city_id=city_id).first()
         return support.support_percentage if support else 0.0
+    
+    def get_average_support(self):
+        """Get average party support across all cities."""
+        if not self.party_supports:
+            return 0.0
+        total_support = sum(support.support_percentage for support in self.party_supports)
+        return total_support / len(self.party_supports)
 
 
 class PartySupport(db.Model):
