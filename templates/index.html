@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Welcome Header -->
+        <div class="card">
+            <div class="card-body text-center">
+                <h1 class="display-4 text-primary">🏛️ Dobrodošli u ELECTORI</h1>
+                <p class="lead">
+                    Simulacija političkih izbora koja vam omogućava potpunu kontrolu nad demokratskim procesima
+                </p>
+                <hr class="my-4">
+                <p>
+                    Kreirajte svoju državu, upravljajte partijama, organizujte izbore i donosite zakone u parlamentu.
+                </p>
+                
+                {% if not active_simulation_id %}
+                <div class="mt-4">
+                    <button class="btn btn-primary btn-lg" onclick="showCreateSimulation()">
+                        🎮 Započni novu simulaciju
+                    </button>
+                    <button class="btn btn-outline-secondary btn-lg" onclick="showLoadSimulation()">
+                        📂 Učitaj postojeću simulaciju
+                    </button>
+                </div>
+                {% else %}
+                <div class="mt-4">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+                        📊 Idi na Dashboard
+                    </a>
+                    <button class="btn btn-outline-secondary btn-lg" onclick="showCreateSimulation()">
+                        🎮 Nova simulacija
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not active_simulation_id %}
+<!-- Features Overview -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Funkcionalnosti</h2>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon">🏙️</div>
+                <h5 class="card-title">Upravljanje Gradovima</h5>
+                <p class="card-text">
+                    Kreirajte gradove, definišite broj stanovnika i upravirajte demografskim podacima
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon">🎯</div>
+                <h5 class="card-title">Politicke Partije</h5>
+                <p class="card-text">
+                    Kreirajte partije, definisite njihove boje, ideologije i upravirajte podrškom po gradovima
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon">🗳️</div>
+                <h5 class="card-title">Izbori</h5>
+                <p class="card-text">
+                    Organizujte parlamentarne, opštinske i predsednicke izbore sa realističnim rezultatima
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon">🏛️</div>
+                <h5 class="card-title">Parlament</h5>
+                <p class="card-text">
+                    Upravljajte parlamentom, kreirajte koalicije i glasajte o zakonima
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon">📊</div>
+                <h5 class="card-title">Analitika</h5>
+                <p class="card-text">
+                    Pratite trendove, analizirajte rezultate i generisite izveštaje
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon">⚙️</div>
+                <h5 class="card-title">Simulacija</h5>
+                <p class="card-text">
+                    Realistični algoritmi sa random faktorima za authentican političkin iskustvo
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Quick Start Guide -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">🚀 Kako početi</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-number">1</div>
+                        <h6>Kreiraj simulaciju</h6>
+                        <p class="small text-muted">Definiši ime države i početne gradove</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-number">2</div>
+                        <h6>Dodaj partije</h6>
+                        <p class="small text-muted">Kreiraj politicke partije sa bojama i ideologijama</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-number">3</div>
+                        <h6>Podesi podršku</h6>
+                        <p class="small text-muted">Definiši podršku svake partije po gradovima</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-number">4</div>
+                        <h6>Organizuj izbore</h6>
+                        <p class="small text-muted">Pokreni izbore i vidi rezultate u realnom vremenu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Simulation Modal -->
+<div id="create-simulation-modal" class="modal" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">🎮 Kreiraj novu simulaciju</h5>
+                <button type="button" class="btn-close" onclick="hideCreateSimulation()">×</button>
+            </div>
+            <form id="create-simulation-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="simulation-name" class="form-label">Ime simulacije:</label>
+                        <input type="text" id="simulation-name" class="form-control" 
+                               placeholder="Moja simulacija" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="country-name" class="form-label">Ime države:</label>
+                        <input type="text" id="country-name" class="form-control" 
+                               placeholder="Srbija" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Početni gradovi:</label>
+                        <div id="cities-container">
+                            <div class="city-input-group mb-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control city-name" 
+                                               placeholder="Ime grada" value="Beograd">
+                                    </div>
+                                    <div class="col-5">
+                                        <input type="number" class="form-control city-population" 
+                                               placeholder="Broj stanovnika" value="1500000" min="100">
+                                    </div>
+                                    <div class="col-1">
+                                        <button type="button" class="btn btn-danger btn-sm" 
+                                                onclick="removeCityInput(this)" disabled>×</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addCityInput()">
+                            + Dodaj grad
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideCreateSimulation()">
+                        Otkaži
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Kreiraj simulaciju
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block styles %}
+<style>
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin: 0 auto 1rem auto;
+}
+
+.city-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.display-4 {
+    font-size: 3rem;
+    font-weight: 300;
+}
+
+.lead {
+    font-size: 1.25rem;
+    font-weight: 300;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showCreateSimulation() {
+    document.getElementById('create-simulation-modal').style.display = 'flex';
+}
+
+function hideCreateSimulation() {
+    document.getElementById('create-simulation-modal').style.display = 'none';
+}
+
+function showLoadSimulation() {
+    // TODO: Implement in Task 2.2
+    ELECTORI.ui.showAlert('Load simulacija funkcionalnost će biti implementirana u sledećoj fazi', 'info');
+}
+
+function addCityInput() {
+    const container = document.getElementById('cities-container');
+    const cityGroup = document.createElement('div');
+    cityGroup.className = 'city-input-group mb-2';
+    cityGroup.innerHTML = `
+        <div class="row">
+            <div class="col-6">
+                <input type="text" class="form-control city-name" placeholder="Ime grada">
+            </div>
+            <div class="col-5">
+                <input type="number" class="form-control city-population" 
+                       placeholder="Broj stanovnika" min="100">
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeCityInput(this)">×</button>
+            </div>
+        </div>
+    `;
+    container.appendChild(cityGroup);
+    updateRemoveButtons();
+}
+
+function removeCityInput(button) {
+    button.closest('.city-input-group').remove();
+    updateRemoveButtons();
+}
+
+function updateRemoveButtons() {
+    const cityGroups = document.querySelectorAll('.city-input-group');
+    cityGroups.forEach((group, index) => {
+        const removeBtn = group.querySelector('.btn-danger');
+        removeBtn.disabled = cityGroups.length <= 1;
+    });
+}
+
+// Handle form submission
+document.getElementById('create-simulation-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const simulationName = document.getElementById('simulation-name').value;
+    const countryName = document.getElementById('country-name').value;
+    
+    const cities = [];
+    document.querySelectorAll('.city-input-group').forEach(group => {
+        const name = group.querySelector('.city-name').value;
+        const population = parseInt(group.querySelector('.city-population').value);
+        
+        if (name && population) {
+            cities.push({ name, population });
+        }
+    });
+    
+    if (cities.length === 0) {
+        ELECTORI.ui.showAlert('Morate dodati bar jedan grad', 'warning');
+        return;
+    }
+    
+    const data = {
+        name: simulationName,
+        country_name: countryName,
+        cities: cities
+    };
+    
+    // Show loading
+    const submitBtn = this.querySelector('button[type="submit"]');
+    ELECTORI.ui.showLoading(submitBtn);
+    
+    // Create simulation (will be implemented in Task 1.3)
+    ELECTORI.api.post('/simulations', data)
+        .then(response => {
+            ELECTORI.ui.showAlert('Simulacija je uspešno kreirana!', 'success');
+            hideCreateSimulation();
+            
+            // Set as active simulation
+            ELECTORI.state.activeSimulationId = response.id;
+            sessionStorage.setItem('activeSimulationId', response.id);
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1500);
+        })
+        .catch(error => {
+            console.error('Failed to create simulation:', error);
+            ELECTORI.ui.showAlert('Greška pri kreiranju simulacije', 'danger');
+        })
+        .finally(() => {
+            ELECTORI.ui.hideLoading(submitBtn);
+        });
+});
+
+// Close modal when clicking outside
+document.getElementById('create-simulation-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        hideCreateSimulation();
+    }
+});
+</script>
+{% endblock %}
