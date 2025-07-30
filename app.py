@@ -24,7 +24,9 @@ def create_app(config_name=None):
     CORS(app)
     
     # Import models to ensure they are registered with SQLAlchemy
-    from models import simulation, city, party, election, parliament
+    # This must be done after db.init_app()
+    with app.app_context():
+        from models import simulation, city, party, election, parliament
     
     # Register blueprints
     from routes import simulation_routes, city_routes, party_routes
