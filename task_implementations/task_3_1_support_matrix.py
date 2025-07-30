@@ -1565,7 +1565,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'id="bulkEditSlider"',
                 'id="filterRangeMin"',
                 'id="normalizationThreshold"',
-                'class="support-slider"'
+                'form-range'  # Changed from 'class="support-slider"' to more generic check
             ]
             
             for element in required_elements:

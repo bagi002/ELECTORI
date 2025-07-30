@@ -1,8 +1,8 @@
 """Support routes for ELECTORI application."""
 from flask import Blueprint, jsonify, request, session
 from sqlalchemy import func
-from models import db, PartySupport, Party, City, Simulation
-from utils.validators import validate_json_data, validate_support_data
+from models import PartySupport, Party, City, Simulation
+from extensions import db
 import logging
 
 logger = logging.getLogger(__name__)

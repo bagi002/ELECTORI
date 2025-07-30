@@ -24,9 +24,11 @@ def create_app(config_name=None):
     
     # Register blueprints
     from routes import simulation_routes, city_routes, party_routes
+    from routes.support_routes import support_bp
     app.register_blueprint(simulation_routes.bp)
     app.register_blueprint(city_routes.bp)
     app.register_blueprint(party_routes.bp)
+    app.register_blueprint(support_bp)
     
     # Main routes
     @app.route('/')
@@ -158,6 +160,17 @@ def create_app(config_name=None):
     def party_profile():
         """Party profile page."""
         return render_template("party_profile.html")
+    
+    # Task 3 Support System Routes
+    @app.route("/support-matrix")
+    def support_matrix():
+        """Support matrix page with slider controls."""
+        return render_template("support_matrix.html")
+    
+    @app.route("/support-analytics")
+    def support_analytics():
+        """Support analytics page with slider-controlled charts."""
+        return render_template("support_analytics.html")
     
     return app
 

@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% block title %}Support Matrix - {{ simulation.name if simulation else 'ELECTORI' }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/support_matrix.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="fas fa-chart-bar"></i>
+                    Matrica Podrške
+                </h1>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary" id="validateMatrix">
+                        <i class="fas fa-check-circle"></i> Validiraj
+                    </button>
+                    <button type="button" class="btn btn-outline-warning" id="normalizeMatrix">
+                        <i class="fas fa-balance-scale"></i> Normalizuj
+                    </button>
+                    <button type="button" class="btn btn-outline-success" id="bulkEditBtn">
+                        <i class="fas fa-edit"></i> Bulk Edit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slider Controls Panel -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-sliders-h"></i>
+                        Slider Kontrole
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Bulk Edit Slider -->
+                        <div class="col-md-3">
+                            <label for="bulkEditSlider" class="form-label">
+                                <i class="fas fa-arrows-alt-h"></i>
+                                Bulk Edit Vrednost
+                            </label>
+                            <div class="slider-container">
+                                <input type="range" 
+                                       class="form-range slider-primary" 
+                                       id="bulkEditSlider" 
+                                       min="0" 
+                                       max="100" 
+                                       step="0.1" 
+                                       value="0">
+                                <div class="slider-output">
+                                    <span id="bulkEditValue">0.0</span>%
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Filter Range Slider -->
+                        <div class="col-md-3">
+                            <label for="filterRangeSlider" class="form-label">
+                                <i class="fas fa-filter"></i>
+                                Filter Opseg
+                            </label>
+                            <div class="slider-container">
+                                <input type="range" 
+                                       class="form-range slider-secondary" 
+                                       id="filterRangeMin" 
+                                       min="0" 
+                                       max="100" 
+                                       step="1" 
+                                       value="0">
+                                <input type="range" 
+                                       class="form-range slider-secondary" 
+                                       id="filterRangeMax" 
+                                       min="0" 
+                                       max="100" 
+                                       step="1" 
+                                       value="100">
+                                <div class="slider-output">
+                                    <span id="filterRangeValue">0% - 100%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Auto-normalization Parameters -->
+                        <div class="col-md-3">
+                            <label for="normalizationThreshold" class="form-label">
+                                <i class="fas fa-percent"></i>
+                                Normalizacija Prag
+                            </label>
+                            <div class="slider-container">
+                                <input type="range" 
+                                       class="form-range slider-warning" 
+                                       id="normalizationThreshold" 
+                                       min="95" 
+                                       max="120" 
+                                       step="1" 
+                                       value="100">
+                                <div class="slider-output">
+                                    <span id="normalizationValue">100</span>%
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Display Mode -->
+                        <div class="col-md-3">
+                            <label for="displayMode" class="form-label">
+                                <i class="fas fa-eye"></i>
+                                Prikaz Mode
+                            </label>
+                            <div class="slider-container">
+                                <select class="form-select" id="displayMode">
+                                    <option value="all">Svi</option>
+                                    <option value="valid">Validni (≤100%)</option>
+                                    <option value="invalid">Nevalidni (>100%)</option>
+                                    <option value="incomplete">Nepopunjeni</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Matrix Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover mb-0" id="supportMatrix">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col" class="sticky-column">
+                                        <i class="fas fa-flag"></i>
+                                        Partija
+                                    </th>
+                                    <!-- City headers will be populated by JavaScript -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Matrix rows will be populated by JavaScript -->
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <th scope="row" class="sticky-column">
+                                        <i class="fas fa-calculator"></i>
+                                        Ukupno po gradu
+                                    </th>
+                                    <!-- City totals will be populated by JavaScript -->
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Cards -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                    <h5 class="card-title">Validni Gradovi</h5>
+                    <h3 class="text-success" id="validCitiesCount">-</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-danger">
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+                    <h5 class="card-title">Nevalidni Gradovi</h5>
+                    <h3 class="text-danger" id="invalidCitiesCount">-</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <i class="fas fa-percentage fa-2x text-info mb-2"></i>
+                    <h5 class="card-title">Prosečna Podrška</h5>
+                    <h3 class="text-info" id="averageSupport">-</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-2x text-warning mb-2"></i>
+                    <h5 class="card-title">Popunjenost</h5>
+                    <h3 class="text-warning" id="completionPercentage">-</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Edit Modal -->
+<div class="modal fade" id="bulkEditModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    Bulk Edit Podrške
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="bulkPartySelect" class="form-label">Izaberi Partiju</label>
+                        <select class="form-select" id="bulkPartySelect">
+                            <option value="">Sve partije</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="bulkCitySelect" class="form-label">Izaberi Grad</label>
+                        <select class="form-select" id="bulkCitySelect">
+                            <option value="">Svi gradovi</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label for="bulkValueSlider" class="form-label">
+                            <i class="fas fa-sliders-h"></i>
+                            Nova Vrednost
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" 
+                                   class="form-range slider-success" 
+                                   id="bulkValueSlider" 
+                                   min="0" 
+                                   max="100" 
+                                   step="0.1" 
+                                   value="0">
+                            <div class="slider-output">
+                                <span id="bulkValueDisplay">0.0</span>%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="bulkPreserveZero" checked>
+                            <label class="form-check-label" for="bulkPreserveZero">
+                                Zadrži nulte vrednosti
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Pregled:</strong> 
+                            <span id="bulkPreview">Odaberite kriterijume za bulk edit</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="button" class="btn btn-success" id="applyBulkEdit">
+                    <i class="fas fa-check"></i>
+                    Primeni Izmene
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/support_matrix.js') }}"></script>
+{% endblock %}
