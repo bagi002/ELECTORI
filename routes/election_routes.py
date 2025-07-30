@@ -348,3 +348,185 @@ def get_available_parties(election_id):
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@bp.route('/<int:election_id>/simulate', methods=['POST'])
+def simulate_election(election_id):
+    """Simulate election results."""
+    try:
+        from utils.election_algorithm import simulate_election as run_simulation
+        
+        election = Election.get_by_id(election_id)
+        if not election:
+            return jsonify({'error': 'Election not found'}), 404
+        
+        if election.status != 'scheduled':
+            return jsonify({'error': 'Election must be scheduled to simulate'}), 400
+        
+        data = request.get_json() or {}
+        randomness_factor = data.get('randomness_factor', 0.1)
+        
+        # Validate randomness factor
+        if not (0.05 <= randomness_factor <= 0.3):
+            return jsonify({'error': 'Randomness factor must be between 0.05 and 0.3'}), 400
+        
+        # Run simulation
+        results = run_simulation(election_id, randomness_factor)
+        
+        return jsonify(results)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@bp.route('/<int:election_id>/results', methods=['GET'])
+def get_election_results(election_id):
+    """Get election results."""
+    try:
+        election = Election.get_by_id(election_id)
+        if not election:
+            return jsonify({'error': 'Election not found'}), 404
+        
+        results = ElectionResult.get_by_election(election_id)
+        
+        # Group results by city and national
+        city_results = {}
+        national_results = {}
+        
+        for result in results:
+            result_dict = result.to_dict()
+            
+            if result.city_id:
+                # City result
+                if result.city_id not in city_results:
+                    city_results[result.city_id] = []
+                city_results[result.city_id].append(result_dict)
+            else:
+                # National result
+                national_results[result.candidacy_id] = result_dict
+        
+        return jsonify({
+            'election_id': election_id,
+            'city_results': city_results,
+            'national_results': national_results,
+            'has_results': len(results) > 0
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@bp.route('/<int:election_id>/statistics', methods=['GET'])
+def get_election_statistics(election_id):
+    """Get election statistics."""
+    try:
+        from utils.election_algorithm import get_election_statistics
+        
+        stats = get_election_statistics(election_id)
+        return jsonify(stats)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@bp.route('/<int:election_id>/dhondt-analysis', methods=['GET'])
+def get_dhondt_analysis(election_id):
+    """Get D'Hondt analysis for parliamentary election."""
+    try:
+        election = Election.get_by_id(election_id)
+        if not election:
+            return jsonify({'error': 'Election not found'}), 404
+        
+        if election.type != 'parliamentary':
+            return jsonify({'error': 'D\'Hondt analysis only available for parliamentary elections'}), 400
+        
+        # Get national results
+        national_results = ElectionResult.query.filter_by(
+            election_id=election_id,
+            city_id=None
+        ).all()
+        
+        if not national_results:
+            return jsonify({'error': 'No election results found. Please simulate the election first.'}), 404
+        
+        # Prepare data for D'Hondt analysis
+        from utils.dhondt_algorithm import calculate_parliament_composition
+        
+        results_dict = {
+            result.candidacy_id: result.vote_percentage 
+            for result in national_results
+        }
+        
+        total_seats = request.args.get('total_seats', 250, type=int)
+        threshold = request.args.get('threshold', election.census_threshold or 0, type=float)
+        
+        analysis = calculate_parliament_composition(
+            results_dict, 
+            total_seats, 
+            threshold
+        )
+        
+        return jsonify(analysis)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@bp.route('/<int:election_id>/coalitions', methods=['GET'])
+def get_coalition_possibilities(election_id):
+    """Get possible coalition combinations."""
+    try:
+        from utils.dhondt_algorithm import find_coalition_majorities
+        
+        election = Election.get_by_id(election_id)
+        if not election:
+            return jsonify({'error': 'Election not found'}), 404
+        
+        # Get seat results
+        national_results = ElectionResult.query.filter_by(
+            election_id=election_id,
+            city_id=None
+        ).all()
+        
+        if not national_results:
+            return jsonify({'error': 'No election results found'}), 404
+        
+        seats = {result.candidacy_id: result.seats_won or 0 for result in national_results}
+        total_seats = sum(seats.values())
+        
+        if total_seats == 0:
+            return jsonify({'error': 'No seat data available'}), 404
+        
+        majority_type = request.args.get('majority_type', 'simple')
+        
+        coalitions = find_coalition_majorities(seats, total_seats, majority_type)
+        
+        # Add candidacy information
+        coalition_details = []
+        for coalition in coalitions[:20]:  # Limit to first 20 combinations
+            coalition_info = {
+                'candidacy_ids': coalition,
+                'total_seats': sum(seats[cid] for cid in coalition),
+                'candidacies': []
+            }
+            
+            for cid in coalition:
+                candidacy = Candidacy.get_by_id(cid)
+                if candidacy:
+                    coalition_info['candidacies'].append({
+                        'id': candidacy.id,
+                        'name': candidacy.name,
+                        'seats': seats[cid]
+                    })
+            
+            coalition_details.append(coalition_info)
+        
+        required_seats = total_seats // 2 + 1 if majority_type == 'simple' else int(total_seats * 2/3)
+        
+        return jsonify({
+            'coalitions': coalition_details,
+            'metadata': {
+                'total_seats': total_seats,
+                'required_seats': required_seats,
+                'majority_type': majority_type,
+                'total_combinations': len(coalitions)
+            }
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

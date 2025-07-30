@@ -169,6 +169,11 @@ def create_app(config_name=None):
         """Election manager page."""
         return render_template("election_manager.html")
     
+    @app.route("/election-day")
+    def election_day():
+        """Election day simulation page."""
+        return render_template("election_day.html")
+    
     # Task 3 Support System Routes
     @app.route("/support-matrix")
     def support_matrix():

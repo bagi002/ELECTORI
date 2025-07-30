@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Dan izbora - ELECTORI{% endblock %}
+
+{% block content %}
+<div class="election-day">
+    <!-- Election Header -->
+    <div class="election-header">
+        <div class="header-content">
+            <div class="election-info">
+                <h1 class="election-title" id="election-title">
+                    <i class="fas fa-vote-yea"></i>
+                    <span id="election-name">Učitavanje...</span>
+                </h1>
+                <div class="election-meta">
+                    <span class="election-date" id="election-date">Učitavanje...</span>
+                    <span class="election-type" id="election-type">Učitavanje...</span>
+                </div>
+            </div>
+            <div class="election-controls">
+                <button class="btn btn-primary btn-lg" id="start-simulation-btn">
+                    <i class="fas fa-play"></i>
+                    Počni simulaciju
+                </button>
+                <button class="btn btn-secondary" id="back-to-manager-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Nazad na upravljanje
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simulation Status -->
+    <div class="simulation-status" id="simulation-status" style="display: none;">
+        <div class="status-content">
+            <div class="progress-section">
+                <h3>
+                    <i class="fas fa-chart-line"></i>
+                    Status simulacije
+                </h3>
+                <div class="progress-container">
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             id="simulation-progress" role="progressbar" style="width: 0%">
+                            <span id="progress-text">Priprema...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="simulation-messages" id="simulation-messages">
+                    <!-- Messages will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-time Results -->
+    <div class="results-container" id="results-container" style="display: none;">
+        <div class="results-grid">
+            <!-- National Results -->
+            <div class="results-card national-results">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-flag"></i>
+                        Nacionalni rezultati
+                    </h3>
+                    <div class="turnout-info">
+                        <span class="turnout-label">Izlaznost:</span>
+                        <span class="turnout-value" id="national-turnout">--%</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="results-chart-container">
+                        <canvas id="national-results-chart"></canvas>
+                    </div>
+                    <div class="results-table-container">
+                        <table class="table table-striped" id="national-results-table">
+                            <thead>
+                                <tr>
+                                    <th>Kandidatura</th>
+                                    <th>Glasovi</th>
+                                    <th>%</th>
+                                    <th class="seats-column">Mandati</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Results will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- City Results Map -->
+            <div class="results-card city-results">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-map-marked-alt"></i>
+                        Rezultati po gradovima
+                    </h3>
+                    <div class="city-selector">
+                        <select class="form-select" id="city-selector">
+                            <option value="">Izaberite grad...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="city-results-grid" id="city-results-grid">
+                        <!-- City results will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parliament Composition (for parliamentary elections) -->
+            <div class="results-card parliament-composition" id="parliament-card" style="display: none;">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-university"></i>
+                        Sastav parlamenta
+                    </h3>
+                    <div class="parliament-stats">
+                        <span class="total-seats">Ukupno: <span id="total-seats">250</span> mandata</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="hemicycle-container">
+                        <div class="hemicycle" id="parliament-hemicycle">
+                            <!-- Parliament visualization -->
+                        </div>
+                    </div>
+                    <div class="coalition-analysis" id="coalition-analysis">
+                        <!-- Coalition possibilities -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Presidential Runoff (for presidential elections) -->
+            <div class="results-card runoff-info" id="runoff-card" style="display: none;">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-crown"></i>
+                        Drugi krug
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="runoff-content" id="runoff-content">
+                        <!-- Runoff information -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Election Statistics -->
+    <div class="statistics-section" id="statistics-section" style="display: none;">
+        <div class="statistics-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="total-voters">0</div>
+                    <div class="stat-label">Ukupno glasača</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="total-votes">0</div>
+                    <div class="stat-label">Ukupno glasova</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="average-turnout">0%</div>
+                    <div class="stat-label">Prosečna izlaznost</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="winner-margin">0%</div>
+                    <div class="stat-label">Prednost pobednika</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export and Share -->
+    <div class="export-section" id="export-section" style="display: none;">
+        <div class="export-actions">
+            <h4>
+                <i class="fas fa-download"></i>
+                Izvezi rezultate
+            </h4>
+            <div class="export-buttons">
+                <button class="btn btn-outline-primary" id="export-pdf-btn">
+                    <i class="fas fa-file-pdf"></i>
+                    PDF izveštaj
+                </button>
+                <button class="btn btn-outline-success" id="export-excel-btn">
+                    <i class="fas fa-file-excel"></i>
+                    Excel tabela
+                </button>
+                <button class="btn btn-outline-info" id="export-json-btn">
+                    <i class="fas fa-file-code"></i>
+                    JSON podaci
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Simulation Settings Modal -->
+<div class="modal fade" id="simulationSettingsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-cogs"></i>
+                    Podešavanja simulacije
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="simulation-settings-form">
+                    <div class="form-group">
+                        <label for="randomness-factor" class="form-label">
+                            Faktor nasumičnosti
+                            <i class="fas fa-info-circle" data-bs-toggle="tooltip" 
+                               title="Koliko mogu da variraju rezultati od bazne podrške (5-30%)"></i>
+                        </label>
+                        <div class="range-container">
+                            <input type="range" class="form-range" id="randomness-factor" 
+                                   min="0.05" max="0.3" step="0.01" value="0.1">
+                            <div class="range-values">
+                                <span>5%</span>
+                                <span class="current-value" id="randomness-value">10%</span>
+                                <span>30%</span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">
+                            Niži faktor = predvidljiviji rezultati, viši faktor = više iznenađenja
+                        </small>
+                    </div>
+                    
+                    <div class="form-group" id="parliament-settings" style="display: none;">
+                        <label for="total-seats-input" class="form-label">Ukupno mandata u parlamentu</label>
+                        <input type="number" class="form-control" id="total-seats-input" 
+                               min="50" max="500" value="250">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="button" class="btn btn-primary" id="start-simulation-confirm">
+                    <i class="fas fa-play"></i>
+                    Pokreni simulaciju
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Winner Announcement Modal -->
+<div class="modal fade" id="winnerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content winner-modal">
+            <div class="modal-body text-center">
+                <div class="winner-announcement">
+                    <div class="winner-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h2>Pobednik izbora</h2>
+                    <div class="winner-info" id="winner-info">
+                        <!-- Winner information will be populated -->
+                    </div>
+                    <div class="celebration-effects">
+                        <div class="confetti"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    <i class="fas fa-check"></i>
+                    Nastavi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/election_day.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/election_simulation.js') }}"></script>
+{% endblock %}
