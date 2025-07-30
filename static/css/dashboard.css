@@ -1,0 +1,190 @@
+/* Dashboard styling */
+.dashboard-container {
+    padding: 2rem 1rem;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 200px);
+}
+
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.stats-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.stats-icon {
+    font-size: 2.5rem;
+    margin-right: 1rem;
+    color: #007bff;
+    min-width: 60px;
+}
+
+.stats-content h3 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.stats-content p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.dashboard-card .card-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 1rem 1.5rem;
+    border: none;
+}
+
+.dashboard-card .card-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.dashboard-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Activity timeline */
+.activity-timeline {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    font-size: 1.2rem;
+    color: #007bff;
+    margin-right: 1rem;
+    margin-top: 0.2rem;
+}
+
+.activity-content p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.activity-content small {
+    display: block;
+    margin-top: 0.25rem;
+}
+
+/* Quick actions */
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #495057;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.quick-action-btn:hover {
+    background: #007bff;
+    border-color: #007bff;
+    color: white;
+    text-decoration: none;
+    transform: translateX(5px);
+}
+
+.quick-action-btn i {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+    min-width: 24px;
+}
+
+.quick-action-btn span {
+    font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem 0.5rem;
+    }
+    
+    .stats-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .stats-icon {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .dashboard-main .col-md-8,
+    .dashboard-main .col-md-4 {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

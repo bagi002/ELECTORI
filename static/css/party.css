@@ -1,0 +1,417 @@
+/* Party Management Styles */
+
+.party-manager {
+    padding: 2rem 1rem;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 200px);
+}
+
+.party-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.search-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.parties-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+/* Party Cards */
+.party-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.party-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.party-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.party-info h3.party-name {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.party-metadata {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.ideology-badge {
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.leader-name {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.leader-name i {
+    margin-right: 0.25rem;
+}
+
+.party-support {
+    text-align: right;
+}
+
+.support-percentage {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.support-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+}
+
+.party-description {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #007bff;
+}
+
+.party-description p {
+    margin: 0;
+    color: #495057;
+    font-style: italic;
+}
+
+.party-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+
+.party-stats .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.party-stats .stat-item i {
+    color: #007bff;
+}
+
+.party-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.party-actions .btn {
+    flex: 1;
+    min-width: 120px;
+}
+
+/* Color Picker */
+.color-picker-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-control-color {
+    width: 100%;
+    height: 45px;
+    border-radius: 6px;
+}
+
+/* Empty State */
+.empty-parties {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6c757d;
+}
+
+.empty-parties i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-parties h3 {
+    margin-bottom: 1rem;
+    color: #495057;
+}
+
+.empty-parties p {
+    margin-bottom: 2rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Party Profile Styles */
+.party-profile {
+    padding: 2rem 1rem;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 200px);
+}
+
+.party-header-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.party-color-bar {
+    height: 6px;
+    width: 100%;
+}
+
+.party-header-content {
+    padding: 2rem;
+}
+
+.party-header-content h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.party-header-content .party-metadata {
+    margin-top: 1rem;
+    gap: 1.5rem;
+}
+
+.party-header-content .ideology-badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+.party-header-content .leader-info,
+.party-header-content .founded-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.party-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.party-info-card,
+.party-stats-card,
+.party-chart-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.party-info-card h3,
+.party-stats-card h3,
+.party-chart-card h3 {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.party-info-card h3 i,
+.party-stats-card h3 i,
+.party-chart-card h3 i {
+    color: #007bff;
+}
+
+.party-stats-card .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.party-stats-card .stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* City Support List */
+.city-support-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.city-support-item:last-child {
+    border-bottom: none;
+}
+
+.city-name {
+    font-weight: 500;
+    color: #2c3e50;
+    flex: 1;
+}
+
+.support-bar {
+    position: relative;
+    width: 150px;
+    height: 25px;
+    background: #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.support-fill {
+    height: 100%;
+    border-radius: 12px;
+    transition: width 0.3s ease;
+}
+
+.support-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .party-manager {
+        padding: 1rem 0.5rem;
+    }
+    
+    .search-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .party-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .party-support {
+        text-align: left;
+    }
+    
+    .party-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .party-actions {
+        flex-direction: column;
+    }
+    
+    .party-actions .btn {
+        min-width: unset;
+    }
+    
+    .party-profile .container {
+        padding: 0;
+    }
+    
+    .party-header-content {
+        padding: 1.5rem;
+    }
+    
+    .party-header-content h1 {
+        font-size: 2rem;
+    }
+    
+    .party-header-content .party-metadata {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .party-actions {
+        flex-direction: column;
+    }
+    
+    .support-bar {
+        width: 120px;
+    }
+    
+    .city-support-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* Loading states */
+.party-card.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Animation utilities */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

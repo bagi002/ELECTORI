@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - ELECTORI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header sa statistikama -->
+    <div class="dashboard-header">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="active-simulation-name">Nema aktivne simulacije</h3>
+                        <p>Aktivna simulacija</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="total-cities">0</h3>
+                        <p>Ukupno gradova</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="total-parties">0</h3>
+                        <p>Ukupno partija</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-vote-yea"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="total-elections">0</h3>
+                        <p>Ukupno izbora</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Glavna sekcija dashboard-a -->
+    <div class="dashboard-main">
+        <div class="row">
+            <!-- Aktivnost timeline -->
+            <div class="col-md-8">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-clock"></i> Poslednje aktivnosti</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="activity-timeline">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p>Dobrodošli u ELECTORI!</p>
+                                    <small class="text-muted">Kreirajte novu simulaciju da počnete.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick actions -->
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-bolt"></i> Brze akcije</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-actions">
+                            <a href="/simulation-manager" class="quick-action-btn" id="manage-simulations">
+                                <i class="fas fa-cogs"></i>
+                                <span>Upravljaj simulacijama</span>
+                            </a>
+                            <a href="/city-manager" class="quick-action-btn" id="manage-cities">
+                                <i class="fas fa-city"></i>
+                                <span>Upravljaj gradovima</span>
+                            </a>
+                            <a href="/party-manager" class="quick-action-btn" id="manage-parties">
+                                <i class="fas fa-users"></i>
+                                <span>Upravljaj partijama</span>
+                            </a>
+                            <button class="quick-action-btn" id="create-election">
+                                <i class="fas fa-vote-yea"></i>
+                                <span>Kreiraj izbore</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upozorenja -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Upozorenja</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="warnings-list">
+                            <!-- Dinamički sadržaj -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
