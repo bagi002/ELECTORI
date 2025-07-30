@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}Upravljanje izborima - ELECTORI{% endblock %}
+
+{% block content %}
+<div class="election-manager">
+    <!-- Header Section -->
+    <div class="manager-header">
+        <div class="header-content">
+            <h2 class="page-title">
+                <i class="fas fa-vote-yea"></i>
+                Upravljanje izborima
+            </h2>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="create-election-btn">
+                    <i class="fas fa-plus"></i>
+                    Novi izbori
+                </button>
+                <button class="btn btn-outline-secondary" id="refresh-elections-btn">
+                    <i class="fas fa-sync-alt"></i>
+                    Osvezi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Elections List -->
+    <div class="elections-container">
+        <div class="elections-grid" id="elections-grid">
+            <!-- Elections will be loaded here -->
+        </div>
+        
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+            <div class="empty-state-content">
+                <i class="fas fa-ballot-check empty-icon"></i>
+                <h3>Nema izbora</h3>
+                <p>Kreirajte novi izbor da počnete sa simulacijom demokratskog procesa.</p>
+                <button class="btn btn-primary" id="create-first-election-btn">
+                    <i class="fas fa-plus"></i>
+                    Kreiraj prvi izbor
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" id="loading-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Učitavanje...</span>
+        </div>
+        <p class="loading-text">Učitavanje izbora...</p>
+    </div>
+</div>
+
+<!-- Create Election Modal -->
+<div class="modal fade" id="createElectionModal" tabindex="-1" aria-labelledby="createElectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createElectionModalLabel">
+                    <i class="fas fa-vote-yea"></i>
+                    Kreiranje novog izbora
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createElectionForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="electionName" class="form-label">Naziv izbora</label>
+                                <input type="text" class="form-control" id="electionName" name="name" required 
+                                       placeholder="npr. Parlamentarni izbori 2025">
+                                <div class="invalid-feedback">Molimo unesite naziv izbora.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="electionType" class="form-label">Tip izbora</label>
+                                <select class="form-select" id="electionType" name="type" required>
+                                    <option value="">Izaberite tip...</option>
+                                    <option value="parliamentary">Parlamentarni</option>
+                                    <option value="municipal">Opštinski</option>
+                                    <option value="presidential">Predsednički</option>
+                                </select>
+                                <div class="invalid-feedback">Molimo izaberite tip izbora.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="electionDate" class="form-label">Datum izbora</label>
+                                <input type="date" class="form-control" id="electionDate" name="election_date" required>
+                                <div class="invalid-feedback">Molimo unesite datum izbora.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="censusThresholdGroup">
+                            <div class="form-group">
+                                <label for="censusThreshold" class="form-label">
+                                    Izborni cenzus (%)
+                                    <i class="fas fa-info-circle" data-bs-toggle="tooltip" 
+                                       data-bs-placement="top" title="Minimum glasova potreban za osvojeni mandat"></i>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="censusThreshold" 
+                                           name="census_threshold" min="0" max="50" step="0.1" value="0">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <small class="form-text text-muted">Između 0% i 50%</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row" id="roundNumberGroup" style="display: none;">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="roundNumber" class="form-label">Krug glasanja</label>
+                                <select class="form-select" id="roundNumber" name="round_number">
+                                    <option value="1">Prvi krug</option>
+                                    <option value="2">Drugi krug</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="submit" form="createElectionForm" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Kreiraj izbor
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Election Details Modal -->
+<div class="modal fade" id="electionDetailsModal" tabindex="-1" aria-labelledby="electionDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="electionDetailsModalLabel">
+                    <i class="fas fa-info-circle"></i>
+                    Detalji izbora
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="electionDetailsContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zatvori</button>
+                <button type="button" class="btn btn-primary" id="manage-candidacies-btn">
+                    <i class="fas fa-users"></i>
+                    Upravljaj kandidaturama
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Candidacy Management Modal -->
+<div class="modal fade" id="candidacyModal" tabindex="-1" aria-labelledby="candidacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="candidacyModalLabel">
+                    <i class="fas fa-users"></i>
+                    Upravljanje kandidaturama
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Existing Candidacies -->
+                <div class="candidacies-section">
+                    <h6>Postojeće kandidature</h6>
+                    <div id="candidacies-list">
+                        <!-- Candidacies will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Add New Candidacy -->
+                <div class="add-candidacy-section mt-4">
+                    <h6>Dodaj novu kandidaturu</h6>
+                    <form id="candidacyForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="candidacyName" class="form-label">Naziv kandidature</label>
+                                    <input type="text" class="form-control" id="candidacyName" name="name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="candidacyType" class="form-label">Tip kandidature</label>
+                                    <select class="form-select" id="candidacyType" name="type" required>
+                                        <option value="">Izaberite tip...</option>
+                                        <option value="party">Samostalna partija</option>
+                                        <option value="coalition">Koalicija</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="candidacyParties" class="form-label">Partije u kandidaturi</label>
+                            <div id="available-parties-container">
+                                <!-- Available parties will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="leadPartyGroup" style="display: none;">
+                            <label for="leadParty" class="form-label">Vodeća partija</label>
+                            <select class="form-select" id="leadParty" name="lead_party_id">
+                                <option value="">Izaberite vodeću partiju...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Dodaj kandidaturu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zatvori</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteElectionModal" tabindex="-1" aria-labelledby="deleteElectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteElectionModalLabel">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Potvrda brisanja
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Da li ste sigurni da želite da obrišete izbor <strong id="delete-election-name"></strong>?</p>
+                <p class="text-muted">Ova akcija će obrisati sve kandidature i rezultate povezane sa ovim izborom. Ova akcija se ne može poništiti.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete-election">
+                    <i class="fas fa-trash"></i>
+                    Obriši izbor
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toast-container">
+    <!-- Toast notifications will be added here -->
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/election_manager.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/election_manager.js') }}"></script>
+{% endblock %}

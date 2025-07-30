@@ -1,5 +1,16 @@
 # Validation utilities for ELECTORI application
 
+def validate_required_fields(data, required_fields):
+    """Validate that all required fields are present and non-empty"""
+    if not data:
+        return False
+    
+    for field in required_fields:
+        if field not in data or not data[field]:
+            return False
+    
+    return True
+
 def validate_simulation_data(data):
     """Validate simulation creation data"""
     errors = []
