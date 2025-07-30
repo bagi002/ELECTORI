@@ -100,15 +100,16 @@
                         </a>
                     </li>
                     {% endif %}
-                    <!-- Advanced features - clearly marked as in development -->
+                    <!-- Parliament Management (TASK 5) - show only if there's an active simulation -->
+                    {% if ui_state.has_active_simulation %}
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#" onclick="return false;" 
-                           title="Parlament je u razvoju - biće dostupan u TASK 5">
-                            <i class="fas fa-landmark text-muted"></i> 
-                            <span class="text-muted">Parlament</span>
-                            <small class="badge bg-warning ms-1">U razvoju</small>
+                        <a class="nav-link" href="/parliament">
+                            <i class="fas fa-university text-success"></i> 
+                            <span>Parlament</span>
+                            <small class="badge bg-success ms-1">Novo</small>
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
                 
                 <ul class="navbar-nav">

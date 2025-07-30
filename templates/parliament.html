@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+
+{% block title %}Parlament - ELECTORI{% endblock %}
+
+{% block content %}
+<div class="parliament-manager">
+    <!-- Header Section -->
+    <div class="manager-header">
+        <div class="header-content">
+            <h2 class="page-title">
+                <i class="fas fa-university"></i>
+                Parlament Republike Srbije
+            </h2>
+            <div class="header-actions">
+                <button class="btn btn-success" id="generate-parliament-btn">
+                    <i class="fas fa-magic"></i>
+                    Generiši parlament
+                </button>
+                <button class="btn btn-primary" id="create-law-btn">
+                    <i class="fas fa-plus"></i>
+                    Novi zakon
+                </button>
+                <button class="btn btn-outline-secondary" id="refresh-parliament-btn">
+                    <i class="fas fa-sync-alt"></i>
+                    Osvezi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parliament Overview -->
+    <div class="parliament-overview">
+        <div class="overview-grid">
+            <!-- Hemicycle Visualization -->
+            <div class="hemicycle-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-users"></i>
+                        Sastav parlamenta
+                    </h3>
+                    <div class="parliament-stats">
+                        <span class="total-seats">Ukupno: <span id="total-seats">0</span> poslanika</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="hemicycle-container">
+                        <div class="hemicycle" id="parliament-hemicycle">
+                            <!-- Parliament seats will be rendered here -->
+                        </div>
+                        <div class="hemicycle-legend" id="hemicycle-legend">
+                            <!-- Legend will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Party Composition -->
+            <div class="composition-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-chart-pie"></i>
+                        Kompozicija po partijama
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="composition-chart-container">
+                        <canvas id="composition-chart"></canvas>
+                    </div>
+                    <div class="composition-table-container">
+                        <table class="table table-striped" id="composition-table">
+                            <thead>
+                                <tr>
+                                    <th>Partija</th>
+                                    <th>Poslanici</th>
+                                    <th>%</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Composition data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parliament Statistics -->
+    <div class="parliament-statistics">
+        <div class="statistics-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="total-mps">0</div>
+                    <div class="stat-label">Ukupno poslanika</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="majority-threshold">0</div>
+                    <div class="stat-label">Potrebno za većinu</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="active-laws">0</div>
+                    <div class="stat-label">Aktivnih zakona</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="recent-votes">0</div>
+                    <div class="stat-label">Skorašnjih glasanja</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Laws Section -->
+    <div class="laws-section">
+        <div class="section-header">
+            <h3>
+                <i class="fas fa-gavel"></i>
+                Zakoni i predlozi
+            </h3>
+            <div class="laws-filters">
+                <select class="form-select" id="law-status-filter">
+                    <option value="">Svi statusi</option>
+                    <option value="proposed">Predloženi</option>
+                    <option value="voting">Na glasanju</option>
+                    <option value="passed">Usvojeni</option>
+                    <option value="rejected">Odbačeni</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="laws-grid" id="laws-grid">
+            <!-- Laws will be populated here -->
+        </div>
+    </div>
+
+    <!-- Coalition Analysis -->
+    <div class="coalition-section">
+        <div class="section-header">
+            <h3>
+                <i class="fas fa-users-cog"></i>
+                Analiza koalicija
+            </h3>
+        </div>
+        
+        <div class="coalition-grid" id="coalition-grid">
+            <!-- Coalition possibilities will be shown here -->
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" id="loading-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Učitavanje...</span>
+        </div>
+        <p class="loading-text">Učitavanje parlamenta...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="empty-state" style="display: none;">
+        <div class="empty-state-content">
+            <i class="fas fa-university empty-icon"></i>
+            <h3>Parlament nije formiran</h3>
+            <p>Generiši parlament na osnovu rezultata izbora da bi mogao da upravljaš zakonima i glasanjima.</p>
+            <button class="btn btn-primary" id="create-first-parliament-btn">
+                <i class="fas fa-magic"></i>
+                Generiši parlament
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Generate Parliament Modal -->
+<div class="modal fade" id="generateParliamentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-magic"></i>
+                    Generiši parlament
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Izaberite izbore na osnovu kojih želite da generirate sastav parlamenta:</p>
+                <div class="form-group">
+                    <label for="election-select" class="form-label">Parlamentarni izbori</label>
+                    <select class="form-select" id="election-select">
+                        <option value="">Izaberite izbore...</option>
+                        <!-- Elections will be populated here -->
+                    </select>
+                </div>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    Ova akcija će obrisati postojeći sastav parlamenta i kreirati novi na osnovu rezultata izabranih izbora.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="button" class="btn btn-primary" id="confirm-generate-parliament">
+                    <i class="fas fa-magic"></i>
+                    Generiši parlament
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Law Modal -->
+<div class="modal fade" id="createLawModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus"></i>
+                    Predloži novi zakon
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createLawForm">
+                    <div class="form-group">
+                        <label for="lawTitle" class="form-label">Naslov zakona</label>
+                        <input type="text" class="form-control" id="lawTitle" name="title" required
+                               placeholder="npr. Zakon o državnom budžetu za 2025. godinu">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lawDescription" class="form-label">Opis zakona</label>
+                        <textarea class="form-control" id="lawDescription" name="description" rows="4"
+                                  placeholder="Detaljno objašnjenje zakona i njegovih odredbi"></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="proposerParty" class="form-label">Partija predlagač</label>
+                                <select class="form-select" id="proposerParty" name="proposer_party_id" required>
+                                    <option value="">Izaberite partiju...</option>
+                                    <!-- Parties will be populated here -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="proposedDate" class="form-label">Datum predlaganja</label>
+                                <input type="date" class="form-control" id="proposedDate" name="proposed_date" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="submit" form="createLawForm" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Predloži zakon
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Law Details Modal -->
+<div class="modal fade" id="lawDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lawDetailsModalLabel">
+                    <i class="fas fa-gavel"></i>
+                    Detalji zakona
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="lawDetailsContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zatvori</button>
+                <button type="button" class="btn btn-primary" id="start-voting-btn">
+                    <i class="fas fa-vote-yea"></i>
+                    Pokreni glasanje
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toast-container">
+    <!-- Toast notifications will be added here -->
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/parliament.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/parliament.js') }}"></script>
+{% endblock %}
