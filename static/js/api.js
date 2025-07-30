@@ -184,8 +184,19 @@ class UIUtils {
         setTimeout(() => {
             const alert = document.getElementById(alertId);
             if (alert) {
-                const bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
+                // Check if bootstrap is available, otherwise use manual removal
+                if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                } else {
+                    // Fallback: manually remove the alert
+                    alert.classList.remove('show');
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            alert.remove();
+                        }
+                    }, 150); // Allow fade transition
+                }
             }
         }, 5000);
     }

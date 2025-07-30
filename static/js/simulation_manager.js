@@ -228,8 +228,10 @@ class SimulationManager {
     }
 
     showCreateModal() {
-        const modal = new bootstrap.Modal(document.getElementById('createSimulationModal'));
-        modal.show();
+        const modal = ELECTORI.ui.getModal('createSimulationModal');
+        if (modal) {
+            modal.show();
+        }
     }
 
     async createSimulation() {
@@ -253,8 +255,10 @@ class SimulationManager {
             UIUtils.showAlert(`Simulacija "${name}" je uspešno kreirana`, 'success');
             
             // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('createSimulationModal'));
-            modal.hide();
+            const modal = ELECTORI.ui.getModal('createSimulationModal');
+            if (modal) {
+                modal.hide();
+            }
 
             // Refresh list
             await this.loadSimulations();
@@ -292,8 +296,10 @@ class SimulationManager {
         
         document.getElementById('delete-simulation-name').textContent = simulationName;
         
-        const modal = new bootstrap.Modal(document.getElementById('deleteSimulationModal'));
-        modal.show();
+        const modal = ELECTORI.ui.getModal('deleteSimulationModal');
+        if (modal) {
+            modal.show();
+        }
     }
 
     async deleteSimulation() {
@@ -307,8 +313,10 @@ class SimulationManager {
             UIUtils.showAlert('Simulacija je uspešno obrisana', 'success');
             
             // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteSimulationModal'));
-            modal.hide();
+            const modal = ELECTORI.ui.getModal('deleteSimulationModal');
+            if (modal) {
+                modal.hide();
+            }
 
             // Refresh list
             await this.loadSimulations();
