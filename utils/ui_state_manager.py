@@ -46,6 +46,16 @@ class UIStateManager:
                 "routes": ["/dashboard"],
                 "task_groups": ["TASK 2.1"],
                 "fallback_status": "enabled"
+            },
+            "support_matrix": {
+                "routes": ["/support-matrix"],
+                "task_groups": ["TASK 3.1"],  # Support matrix is implemented in TASK 3.1
+                "fallback_status": "enabled"
+            },
+            "support_analytics": {
+                "routes": ["/support-analytics"],
+                "task_groups": ["TASK 3.2"],  # Support analytics is implemented in TASK 3.2
+                "fallback_status": "enabled"
             }
         }
     
@@ -75,7 +85,7 @@ class UIStateManager:
             for route in feature_config["routes"]:
                 if route in ["/elections", "/parliament"]:
                     return False  # These are known to be unimplemented
-                elif route in ["/dashboard", "/simulation-manager", "/city-manager", "/party-manager"]:
+                elif route in ["/dashboard", "/simulation-manager", "/city-manager", "/party-manager", "/support-matrix", "/support-analytics"]:
                     return True  # These are implemented
         
         return feature_config.get("fallback_status") == "enabled"
@@ -87,29 +97,43 @@ class UIStateManager:
             "simulations": self._is_feature_implemented("simulation_manager"),
             "cities": self._is_feature_implemented("city_manager"),
             "parties": self._is_feature_implemented("party_manager"),
+            "support_matrix": self._is_feature_implemented("support_matrix"),
+            "support_analytics": self._is_feature_implemented("support_analytics"),
             "elections": self._is_feature_implemented("elections_nav"),
             "parliament": self._is_feature_implemented("parliament_nav")
         }
     
     def should_show_simulation_list(self) -> bool:
         """Determine if simulation list should be shown based on current context."""
-        active_simulation_id = session.get('active_simulation_id')
+        try:
+            active_simulation_id = session.get('active_simulation_id')
+        except RuntimeError:
+            # Not in request context (e.g., during testing)
+            return True
         
         # If no active simulation, always show simulation list
         if not active_simulation_id:
             return True
         
         # If we're on simulation manager page, show list
-        from flask import request
-        if request.endpoint in ['simulation_manager', 'index']:
-            return True
+        try:
+            from flask import request
+            if request.endpoint in ['simulation_manager', 'index']:
+                return True
+        except RuntimeError:
+            # Not in request context (e.g., during testing)
+            pass
         
         # If we're working within a simulation (other pages), hide simulation list
         return False
     
     def get_context_for_template(self) -> Dict:
         """Get context data for templates."""
-        active_simulation_id = session.get('active_simulation_id')
+        try:
+            active_simulation_id = session.get('active_simulation_id')
+        except RuntimeError:
+            # Not in request context (e.g., during testing)
+            active_simulation_id = None
         
         return {
             "ui_state": {
@@ -138,4 +162,24 @@ ui_state_manager = UIStateManager()
 
 def get_ui_context():
     """Helper function to get UI context for templates."""
-    return ui_state_manager.get_context_for_template()
+    try:
+        return ui_state_manager.get_context_for_template()
+    except RuntimeError:
+        # Fallback for testing or when not in request context
+        return {
+            "ui_state": {
+                "navigation": {
+                    "dashboard": True,
+                    "simulations": True,
+                    "cities": True,
+                    "parties": True,
+                    "support_matrix": True,
+                    "support_analytics": True,
+                    "elections": False,
+                    "parliament": False
+                },
+                "active_simulation_id": None,
+                "show_simulation_list": True,
+                "has_active_simulation": False
+            }
+        }

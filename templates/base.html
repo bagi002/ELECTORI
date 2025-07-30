@@ -66,22 +66,45 @@
                             <i class="fas fa-users"></i> Partije
                         </a>
                     </li>
+                    <!-- Support System (TASK 3) - show only if there's an active simulation -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="supportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-chart-line text-success"></i> Podrška
+                            <small class="badge bg-success ms-1">Novo</small>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="supportDropdown">
+                            <li>
+                                <a class="dropdown-item{% if not ui_state.navigation.support_matrix %} disabled{% endif %}" 
+                                   href="{% if ui_state.navigation.support_matrix %}/support-matrix{% else %}#{% endif %}"
+                                   {% if not ui_state.navigation.support_matrix %}onclick="return false;" title="Matrica podrške nije još uvek implementirana"{% endif %}>
+                                    <i class="fas fa-table"></i> Matrica Podrške
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item{% if not ui_state.navigation.support_analytics %} disabled{% endif %}" 
+                                   href="{% if ui_state.navigation.support_analytics %}/support-analytics{% else %}#{% endif %}"
+                                   {% if not ui_state.navigation.support_analytics %}onclick="return false;" title="Analitika podrške nije još uvek implementirana"{% endif %}>
+                                    <i class="fas fa-chart-pie"></i> Analitika Podrške
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     {% endif %}
-                    <!-- Advanced features - disabled until implemented -->
+                    <!-- Advanced features - clearly marked as in development -->
                     <li class="nav-item">
                         <a class="nav-link disabled" href="#" onclick="return false;" 
-                           title="Izbori će biti dostupni u budućoj verziji">
+                           title="Izbori su u razvoju - biće dostupni u TASK 4">
                             <i class="fas fa-vote-yea text-muted"></i> 
                             <span class="text-muted">Izbori</span>
-                            <small class="badge bg-warning ms-1">Uskoro</small>
+                            <small class="badge bg-warning ms-1">U razvoju</small>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" href="#" onclick="return false;" 
-                           title="Parlament će biti dostupan u budućoj verziji">
+                           title="Parlament je u razvoju - biće dostupan u TASK 5">
                             <i class="fas fa-landmark text-muted"></i> 
                             <span class="text-muted">Parlament</span>
-                            <small class="badge bg-warning ms-1">Uskoro</small>
+                            <small class="badge bg-warning ms-1">U razvoju</small>
                         </a>
                     </li>
                 </ul>

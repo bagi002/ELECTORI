@@ -284,6 +284,40 @@ ELECTORI.ui = {
     },
     
     /**
+     * Safely get or create Bootstrap modal
+     */
+    getModal: function(modalElement) {
+        if (typeof modalElement === 'string') {
+            modalElement = document.getElementById(modalElement) || document.querySelector(modalElement);
+        }
+        
+        if (!modalElement) {
+            console.error('Modal element not found');
+            return null;
+        }
+        
+        // Check if bootstrap is available
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            return bootstrap.Modal.getOrCreateInstance(modalElement);
+        } else {
+            // Fallback: manual modal control
+            console.warn('Bootstrap not available, using fallback modal');
+            return {
+                show: function() {
+                    modalElement.style.display = 'block';
+                    modalElement.classList.add('show');
+                    document.body.classList.add('modal-open');
+                },
+                hide: function() {
+                    modalElement.style.display = 'none';
+                    modalElement.classList.remove('show');
+                    document.body.classList.remove('modal-open');
+                }
+            };
+        }
+    },
+    
+    /**
      * Create modal dialog
      */
     createModal: function(title, content, options = {}) {
