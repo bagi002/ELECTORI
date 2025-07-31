@@ -95,7 +95,7 @@ class Election(db.Model):
     @classmethod
     def get_by_id(cls, election_id):
         """Get election by ID."""
-        return cls.query.get(election_id)
+        return db.session.get(cls, election_id)
     
     @classmethod
     def get_by_simulation(cls, simulation_id):
@@ -160,7 +160,7 @@ class Candidacy(db.Model):
     @classmethod
     def get_by_id(cls, candidacy_id):
         """Get candidacy by ID."""
-        return cls.query.get(candidacy_id)
+        return db.session.get(cls, candidacy_id)
     
     @classmethod
     def get_by_election(cls, election_id):
@@ -224,7 +224,7 @@ class CandidacyMembership(db.Model):
     @classmethod
     def get_by_id(cls, membership_id):
         """Get candidacy membership by ID."""
-        return cls.query.get(membership_id)
+        return db.session.get(cls, membership_id)
     
     @classmethod
     def get_by_candidacy(cls, candidacy_id):
@@ -320,7 +320,7 @@ class ElectionResult(db.Model):
     @classmethod
     def get_by_id(cls, result_id):
         """Get election result by ID."""
-        return cls.query.get(result_id)
+        return db.session.get(cls, result_id)
     
     @classmethod
     def get_by_election(cls, election_id):

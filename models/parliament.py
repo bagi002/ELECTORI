@@ -1,6 +1,6 @@
 """Parliament models for ELECTORI application."""
 from sqlalchemy.orm import validates
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 import enum
 from extensions import db
 
@@ -76,7 +76,7 @@ class MP(db.Model):
     @classmethod
     def get_by_id(cls, mp_id):
         """Get MP by ID."""
-        return cls.query.get(mp_id)
+        return db.session.get(cls, mp_id)
     
     @classmethod
     def get_by_simulation(cls, simulation_id, parliament_type=None, active_only=True):
@@ -156,7 +156,7 @@ class ParliamentCoalition(db.Model):
     @classmethod
     def get_by_id(cls, coalition_id):
         """Get coalition by ID."""
-        return cls.query.get(coalition_id)
+        return db.session.get(cls, coalition_id)
     
     @classmethod
     def get_by_simulation(cls, simulation_id, parliament_type=None, active_only=True):
@@ -245,7 +245,7 @@ class Law(db.Model):
     @classmethod
     def get_by_id(cls, law_id):
         """Get law by ID."""
-        return cls.query.get(law_id)
+        return db.session.get(cls, law_id)
     
     @classmethod
     def get_by_simulation(cls, simulation_id, parliament_type=None, status=None):
@@ -320,7 +320,7 @@ class Vote(db.Model):
             law_id=law_id,
             mp_id=mp_id,
             vote_type=vote_type,
-            vote_date=vote_date or datetime.utcnow()
+            vote_date=vote_date or datetime.now(timezone.utc)
         )
         db.session.add(vote)
         db.session.commit()
@@ -329,7 +329,7 @@ class Vote(db.Model):
     @classmethod
     def get_by_id(cls, vote_id):
         """Get vote by ID."""
-        return cls.query.get(vote_id)
+        return db.session.get(cls, vote_id)
     
     @classmethod
     def get_by_law(cls, law_id):
@@ -344,7 +344,7 @@ class Vote(db.Model):
     def update(self, vote_type):
         """Update vote type."""
         self.vote_type = vote_type
-        self.vote_date = datetime.utcnow()
+        self.vote_date = datetime.now(timezone.utc)
         db.session.commit()
     
     def delete(self):

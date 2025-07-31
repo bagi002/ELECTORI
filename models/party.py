@@ -1,6 +1,6 @@
 """Party models for ELECTORI application."""
 from sqlalchemy.orm import validates
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 import enum
 import re
 from extensions import db
@@ -89,7 +89,7 @@ class Party(db.Model):
     @classmethod
     def get_by_id(cls, party_id):
         """Get party by ID."""
-        return cls.query.get(party_id)
+        return db.session.get(cls, party_id)
     
     @classmethod
     def get_by_simulation(cls, simulation_id):
@@ -174,7 +174,7 @@ class PartySupport(db.Model):
     @classmethod
     def get_by_id(cls, support_id):
         """Get party support by ID."""
-        return cls.query.get(support_id)
+        return db.session.get(cls, support_id)
     
     @classmethod
     def get_by_city(cls, city_id):
@@ -189,7 +189,7 @@ class PartySupport(db.Model):
     def update(self, support_percentage):
         """Update support percentage."""
         self.support_percentage = support_percentage
-        self.last_updated = datetime.utcnow()
+        self.last_updated = datetime.now(timezone.utc)
         db.session.commit()
     
     def delete(self):

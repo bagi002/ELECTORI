@@ -106,8 +106,13 @@ class UIStateManager:
     def should_show_simulation_list(self) -> bool:
         """Determine if simulation list should be shown based on current context."""
         try:
+            from flask import has_request_context
+            if not has_request_context():
+                # Not in request context (e.g., during testing)
+                return True
+            
             active_simulation_id = session.get('active_simulation_id')
-        except RuntimeError:
+        except (RuntimeError, ImportError):
             # Not in request context (e.g., during testing)
             return True
         
@@ -120,7 +125,7 @@ class UIStateManager:
             from flask import request
             if request.endpoint in ['simulation_manager', 'index']:
                 return True
-        except RuntimeError:
+        except (RuntimeError, ImportError):
             # Not in request context (e.g., during testing)
             pass
         
@@ -130,8 +135,13 @@ class UIStateManager:
     def get_context_for_template(self) -> Dict:
         """Get context data for templates."""
         try:
-            active_simulation_id = session.get('active_simulation_id')
-        except RuntimeError:
+            from flask import has_request_context
+            if not has_request_context():
+                # Not in request context (e.g., during testing)
+                active_simulation_id = None
+            else:
+                active_simulation_id = session.get('active_simulation_id')
+        except (RuntimeError, ImportError):
             # Not in request context (e.g., during testing)
             active_simulation_id = None
         
@@ -163,8 +173,28 @@ ui_state_manager = UIStateManager()
 def get_ui_context():
     """Helper function to get UI context for templates."""
     try:
+        from flask import has_request_context
+        if not has_request_context():
+            # Fallback for testing or when not in request context
+            return {
+                "ui_state": {
+                    "navigation": {
+                        "dashboard": True,
+                        "simulations": True,
+                        "cities": True,
+                        "parties": True,
+                        "support_matrix": True,
+                        "support_analytics": True,
+                        "elections": False,
+                        "parliament": False
+                    },
+                    "active_simulation_id": None,
+                    "show_simulation_list": True,
+                    "has_active_simulation": False
+                }
+            }
         return ui_state_manager.get_context_for_template()
-    except RuntimeError:
+    except (RuntimeError, ImportError):
         # Fallback for testing or when not in request context
         return {
             "ui_state": {

@@ -5,6 +5,18 @@ Tests for UI State Management functionality
 import pytest
 from unittest.mock import patch, MagicMock
 from utils.ui_state_manager import UIStateManager, get_ui_context
+from app import create_app, db
+
+
+@pytest.fixture
+def app():
+    """Create test app."""
+    app = create_app('testing')
+    
+    with app.app_context():
+        db.create_all()
+        yield app
+        db.drop_all()
 
 
 class TestUIStateManager:
@@ -44,45 +56,50 @@ class TestUIStateManager:
         assert nav_state["elections"] == False
         assert nav_state["parliament"] == False
     
-    @patch('utils.ui_state_manager.session')
-    def test_simulation_list_visibility_no_active_simulation(self, mock_session):
+    def test_simulation_list_visibility_no_active_simulation(self, app):
         """Test simulation list visibility when no active simulation."""
-        mock_session.get.return_value = None
-        
-        manager = UIStateManager()
-        assert manager.should_show_simulation_list() == True
+        with app.test_request_context():
+            from flask import session
+            session['active_simulation_id'] = None
+            
+            manager = UIStateManager()
+            assert manager.should_show_simulation_list() == True
     
-    @patch('utils.ui_state_manager.session')
-    @patch('utils.ui_state_manager.request')
-    def test_simulation_list_visibility_with_active_simulation(self, mock_request, mock_session):
+    def test_simulation_list_visibility_with_active_simulation(self, app):
         """Test simulation list visibility with active simulation."""
-        mock_session.get.return_value = 1
-        mock_request.endpoint = 'dashboard'
-        
-        manager = UIStateManager()
-        # Should hide simulation list when working in other parts of the app
-        assert manager.should_show_simulation_list() == False
-        
-        # Should show simulation list when on simulation manager page
-        mock_request.endpoint = 'simulation_manager'
-        assert manager.should_show_simulation_list() == True
+        with app.test_request_context() as ctx:
+            from flask import session, request
+            session['active_simulation_id'] = 1
+            
+            manager = UIStateManager()
+            
+            # Mock the request endpoint for testing
+            with patch('flask.request') as mock_request:
+                mock_request.endpoint = 'dashboard'
+                # Should hide simulation list when working in other parts of the app
+                assert manager.should_show_simulation_list() == False
+                
+                # Should show simulation list when on simulation manager page
+                mock_request.endpoint = 'simulation_manager'
+                assert manager.should_show_simulation_list() == True
     
-    @patch('utils.ui_state_manager.session')
-    def test_template_context(self, mock_session):
+    def test_template_context(self, app):
         """Test template context generation."""
-        mock_session.get.return_value = 1
-        
-        manager = UIStateManager()
-        context = manager.get_context_for_template()
-        
-        assert "ui_state" in context
-        assert "navigation" in context["ui_state"]
-        assert "active_simulation_id" in context["ui_state"]
-        assert "show_simulation_list" in context["ui_state"]
-        assert "has_active_simulation" in context["ui_state"]
-        
-        assert context["ui_state"]["has_active_simulation"] == True
-        assert context["ui_state"]["active_simulation_id"] == 1
+        with app.test_request_context():
+            from flask import session
+            session['active_simulation_id'] = 1
+            
+            manager = UIStateManager()
+            context = manager.get_context_for_template()
+            
+            assert "ui_state" in context
+            assert "navigation" in context["ui_state"]
+            assert "active_simulation_id" in context["ui_state"]
+            assert "show_simulation_list" in context["ui_state"]
+            assert "has_active_simulation" in context["ui_state"]
+            
+            assert context["ui_state"]["has_active_simulation"] == True
+            assert context["ui_state"]["active_simulation_id"] == 1
     
     def test_disabled_features_list(self):
         """Test getting list of disabled features."""
@@ -98,16 +115,17 @@ class TestUIStateManager:
 class TestUIContextIntegration:
     """Test UI context integration with Flask."""
     
-    @patch('utils.ui_state_manager.session')
-    def test_get_ui_context_function(self, mock_session):
+    def test_get_ui_context_function(self, app):
         """Test the get_ui_context helper function."""
-        mock_session.get.return_value = None
-        
-        context = get_ui_context()
-        
-        assert "ui_state" in context
-        assert context["ui_state"]["has_active_simulation"] == False
-        assert context["ui_state"]["active_simulation_id"] is None
+        with app.test_request_context():
+            from flask import session
+            session['active_simulation_id'] = None
+            
+            context = get_ui_context()
+            
+            assert "ui_state" in context
+            assert context["ui_state"]["has_active_simulation"] == False
+            assert context["ui_state"]["active_simulation_id"] is None
 
 
 class TestUIStateManagerWithTaskReport:

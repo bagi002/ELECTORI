@@ -68,7 +68,7 @@ class City(db.Model):
     @classmethod
     def get_by_id(cls, city_id):
         """Get city by ID."""
-        return cls.query.get(city_id)
+        return db.session.get(cls, city_id)
     
     @classmethod
     def get_by_simulation(cls, simulation_id):

@@ -1,5 +1,5 @@
 """Simulation model for ELECTORI application."""
-from datetime import datetime
+from datetime import datetime, timezone
 import enum
 
 # Get db instance - will be set by Flask app
@@ -63,7 +63,7 @@ class Simulation(db.Model):
     @classmethod
     def get_by_id(cls, simulation_id):
         """Get simulation by ID."""
-        return cls.query.get(simulation_id)
+        return db.session.get(cls, simulation_id)
     
     @classmethod
     def get_all(cls):
@@ -75,7 +75,7 @@ class Simulation(db.Model):
         for key, value in kwargs.items():
             if hasattr(self, key):
                 setattr(self, key, value)
-        self.last_played = datetime.utcnow()
+        self.last_played = datetime.now(timezone.utc)
         db.session.commit()
     
     def delete(self):
