@@ -126,15 +126,13 @@ class ElectionSimulation {
     }
     
     showSimulationSettings() {
-        const modal = new bootstrap.Modal(document.getElementById('simulationSettingsModal'));
-        modal.show();
+        electoriUI.showModal('simulationSettingsModal');
     }
     
     async startSimulation() {
         try {
             // Close settings modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('simulationSettingsModal'));
-            modal.hide();
+            electoriUI.hideModal('simulationSettingsModal');
             
             // Get settings
             const randomnessFactor = parseFloat(document.getElementById('randomness-factor').value);
@@ -149,7 +147,7 @@ class ElectionSimulation {
             
         } catch (error) {
             console.error('Error starting simulation:', error);
-            this.showError(error.message);
+            electoriUI.showAlert(error.message, 'danger');
             this.simulationRunning = false;
         }
     }
@@ -637,8 +635,7 @@ class ElectionSimulation {
                 ${this.results.national.seats ? `<p>${this.results.national.seats[winnerId]} mandata</p>` : ''}
             `;
             
-            const modal = new bootstrap.Modal(document.getElementById('winnerModal'));
-            setTimeout(() => modal.show(), 1000);
+            setTimeout(() => electoriUI.showModal('winnerModal'), 1000);
         }
     }
     
@@ -714,9 +711,7 @@ class ElectionSimulation {
     }
     
     showError(message) {
-        // Create error toast or alert
-        console.error(message);
-        alert(`Greška: ${message}`);
+        electoriUI.showAlert(`Greška: ${message}`, 'danger');
     }
 }
 

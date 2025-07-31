@@ -6,144 +6,128 @@
 <div class="election-day">
     <!-- Election Header -->
     <div class="election-header">
-        <div class="header-content">
-            <div class="election-info">
-                <h1 class="election-title" id="election-title">
-                    <i class="fas fa-vote-yea"></i>
-                    <span id="election-name">Učitavanje...</span>
-                </h1>
-                <div class="election-meta">
-                    <span class="election-date" id="election-date">Učitavanje...</span>
-                    <span class="election-type" id="election-type">Učitavanje...</span>
+        <div class="container">
+            <div class="header-content">
+                <div class="election-info">
+                    <h1 id="election-title">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7,10 12,15 17,10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span id="election-name">Učitavanje...</span>
+                    </h1>
+                    <div class="election-meta">
+                        <span class="election-date" id="election-date">Učitavanje...</span>
+                        <span class="election-type" id="election-type">Učitavanje...</span>
+                    </div>
                 </div>
-            </div>
-            <div class="election-controls">
-                <button class="btn btn-primary btn-lg" id="start-simulation-btn">
-                    <i class="fas fa-play"></i>
-                    Počni simulaciju
-                </button>
-                <button class="btn btn-secondary" id="back-to-manager-btn">
-                    <i class="fas fa-arrow-left"></i>
-                    Nazad na upravljanje
-                </button>
+                <div class="election-controls">
+                    <button class="btn btn-primary btn-lg" id="start-simulation-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5,3 19,12 5,21"></polygon>
+                        </svg>
+                        Počni simulaciju
+                    </button>
+                    <button class="btn btn-secondary" id="back-to-manager-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15,18 9,12 15,6"></polyline>
+                        </svg>
+                        Nazad na upravljanje
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Simulation Status -->
-    <div class="simulation-status" id="simulation-status" style="display: none;">
-        <div class="status-content">
-            <div class="progress-section">
-                <h3>
-                    <i class="fas fa-chart-line"></i>
-                    Status simulacije
-                </h3>
-                <div class="progress-container">
-                    <div class="progress" style="height: 25px;">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                             id="simulation-progress" role="progressbar" style="width: 0%">
-                            <span id="progress-text">Priprema...</span>
+    <div class="container">
+        <div class="simulation-status" id="simulation-status" style="display: none;">
+            <div class="status-content">
+                <div class="progress-section">
+                    <h3>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                        </svg>
+                        Status simulacije
+                    </h3>
+                    <div class="progress-container">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-animated" 
+                                 id="simulation-progress" style="width: 0%">
+                                <span id="progress-text">Priprema...</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="simulation-messages" id="simulation-messages">
-                    <!-- Messages will be added here -->
+                    <div class="simulation-messages" id="simulation-messages">
+                        <!-- Messages will be added here -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Real-time Results -->
-    <div class="results-container" id="results-container" style="display: none;">
-        <div class="results-grid">
-            <!-- National Results -->
-            <div class="results-card national-results">
-                <div class="card-header">
-                    <h3>
-                        <i class="fas fa-flag"></i>
-                        Nacionalni rezultati
-                    </h3>
-                    <div class="turnout-info">
-                        <span class="turnout-label">Izlaznost:</span>
-                        <span class="turnout-value" id="national-turnout">--%</span>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="results-chart-container">
-                        <canvas id="national-results-chart"></canvas>
-                    </div>
-                    <div class="results-table-container">
-                        <table class="table table-striped" id="national-results-table">
-                            <thead>
-                                <tr>
-                                    <th>Kandidatura</th>
-                                    <th>Glasovi</th>
-                                    <th>%</th>
-                                    <th class="seats-column">Mandati</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Results will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- City Results Map -->
-            <div class="results-card city-results">
-                <div class="card-header">
-                    <h3>
-                        <i class="fas fa-map-marked-alt"></i>
-                        Rezultati po gradovima
-                    </h3>
-                    <div class="city-selector">
-                        <select class="form-select" id="city-selector">
-                            <option value="">Izaberite grad...</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="city-results-grid" id="city-results-grid">
-                        <!-- City results will be populated here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Parliament Composition (for parliamentary elections) -->
-            <div class="results-card parliament-composition" id="parliament-card" style="display: none;">
-                <div class="card-header">
-                    <h3>
-                        <i class="fas fa-university"></i>
-                        Sastav parlamenta
-                    </h3>
-                    <div class="parliament-stats">
-                        <span class="total-seats">Ukupno: <span id="total-seats">250</span> mandata</span>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="hemicycle-container">
-                        <div class="hemicycle" id="parliament-hemicycle">
-                            <!-- Parliament visualization -->
+    <div class="container">
+        <div class="results-container" id="results-container" style="display: none;">
+            <div class="results-grid">
+                <!-- National Results -->
+                <div class="results-card national-results">
+                    <div class="card-header">
+                        <h3>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                <line x1="4" y1="22" x2="4" y2="15"></line>
+                            </svg>
+                            Nacionalni rezultati
+                        </h3>
+                        <div class="turnout-info">
+                            <span class="turnout-label">Izlaznost:</span>
+                            <span class="turnout-value" id="national-turnout">--%</span>
                         </div>
                     </div>
-                    <div class="coalition-analysis" id="coalition-analysis">
-                        <!-- Coalition possibilities -->
+                    <div class="card-body">
+                        <div class="results-chart-container">
+                            <canvas id="national-results-chart"></canvas>
+                        </div>
+                        <div class="results-table-container">
+                            <table class="table" id="national-results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Kandidatura</th>
+                                        <th>Glasovi</th>
+                                        <th>%</th>
+                                        <th class="seats-column">Mandati</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Results will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Presidential Runoff (for presidential elections) -->
-            <div class="results-card runoff-info" id="runoff-card" style="display: none;">
-                <div class="card-header">
-                    <h3>
-                        <i class="fas fa-crown"></i>
-                        Drugi krug
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="runoff-content" id="runoff-content">
-                        <!-- Runoff information -->
+                <!-- City Results Map -->
+                <div class="results-card city-results">
+                    <div class="card-header">
+                        <h3>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            Rezultati po gradovima
+                        </h3>
+                        <div class="city-selector">
+                            <select class="form-control form-select" id="city-selector">
+                                <option value="">Izaberite grad...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="city-results-grid" id="city-results-grid">
+                            <!-- City results will be populated here -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -151,42 +135,58 @@
     </div>
 
     <!-- Election Statistics -->
-    <div class="statistics-section" id="statistics-section" style="display: none;">
-        <div class="statistics-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-users"></i>
+    <div class="container">
+        <div class="statistics-section" id="statistics-section" style="display: none;">
+            <div class="statistics-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="total-voters">0</div>
+                        <div class="stat-label">Ukupno glasača</div>
+                    </div>
                 </div>
-                <div class="stat-content">
-                    <div class="stat-value" id="total-voters">0</div>
-                    <div class="stat-label">Ukupno glasača</div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7,10 12,15 17,10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="total-votes">0</div>
+                        <div class="stat-label">Ukupno glasova</div>
+                    </div>
                 </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-vote-yea"></i>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="average-turnout">0%</div>
+                        <div class="stat-label">Prosečna izlaznost</div>
+                    </div>
                 </div>
-                <div class="stat-content">
-                    <div class="stat-value" id="total-votes">0</div>
-                    <div class="stat-label">Ukupno glasova</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-percentage"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-value" id="average-turnout">0%</div>
-                    <div class="stat-label">Prosečna izlaznost</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-chart-bar"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-value" id="winner-margin">0%</div>
-                    <div class="stat-label">Prednost pobednika</div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="winner-margin">0%</div>
+                        <div class="stat-label">Prednost pobednika</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -194,47 +194,77 @@
 
     <!-- Export and Share -->
     <div class="export-section" id="export-section" style="display: none;">
-        <div class="export-actions">
-            <h4>
-                <i class="fas fa-download"></i>
-                Izvezi rezultate
-            </h4>
-            <div class="export-buttons">
-                <button class="btn btn-outline-primary" id="export-pdf-btn">
-                    <i class="fas fa-file-pdf"></i>
-                    PDF izveštaj
-                </button>
-                <button class="btn btn-outline-success" id="export-excel-btn">
-                    <i class="fas fa-file-excel"></i>
-                    Excel tabela
-                </button>
-                <button class="btn btn-outline-info" id="export-json-btn">
-                    <i class="fas fa-file-code"></i>
-                    JSON podaci
-                </button>
+        <div class="container">
+            <div class="export-actions">
+                <h4>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7,10 12,15 17,10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Izvezi rezultate
+                </h4>
+                <div class="export-buttons">
+                    <button class="btn btn-outline" id="export-pdf-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                        </svg>
+                        PDF izveštaj
+                    </button>
+                    <button class="btn btn-outline" id="export-excel-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10,9 9,9 8,9"></polyline>
+                        </svg>
+                        Excel tabela
+                    </button>
+                    <button class="btn btn-outline" id="export-json-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        JSON podaci
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Simulation Settings Modal -->
-<div class="modal fade" id="simulationSettingsModal" tabindex="-1">
+<div class="modal" id="simulationSettingsModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="fas fa-cogs"></i>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1m20.5-7.5L15 9.5M9.5 9.5L3 3m18.5 18.5L15 15.5M9.5 15.5L3 21"></path>
+                    </svg>
                     Podešavanja simulacije
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn btn-sm btn-outline modal-close">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
             </div>
             <div class="modal-body">
                 <form id="simulation-settings-form">
                     <div class="form-group">
                         <label for="randomness-factor" class="form-label">
                             Faktor nasumičnosti
-                            <i class="fas fa-info-circle" data-bs-toggle="tooltip" 
-                               title="Koliko mogu da variraju rezultati od bazne podrške (5-30%)"></i>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 4px; opacity: 0.7;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
                         </label>
                         <div class="range-container">
                             <input type="range" class="form-range" id="randomness-factor" 
@@ -245,7 +275,7 @@
                                 <span>30%</span>
                             </div>
                         </div>
-                        <small class="form-text text-muted">
+                        <small style="color: var(--gray-600); font-size: 0.75rem;">
                             Niži faktor = predvidljiviji rezultati, viši faktor = više iznenađenja
                         </small>
                     </div>
@@ -258,9 +288,11 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Otkaži</button>
+                <button type="button" class="btn btn-secondary modal-close">Otkaži</button>
                 <button type="button" class="btn btn-primary" id="start-simulation-confirm">
-                    <i class="fas fa-play"></i>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5,3 19,12 5,21"></polygon>
+                    </svg>
                     Pokreni simulaciju
                 </button>
             </div>
@@ -269,26 +301,32 @@
 </div>
 
 <!-- Winner Announcement Modal -->
-<div class="modal fade" id="winnerModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+<div class="modal" id="winnerModal">
+    <div class="modal-dialog">
         <div class="modal-content winner-modal">
-            <div class="modal-body text-center">
+            <div class="modal-body">
                 <div class="winner-announcement">
                     <div class="winner-icon">
-                        <i class="fas fa-trophy"></i>
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                            <path d="M4 22h16"></path>
+                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                        </svg>
                     </div>
                     <h2>Pobednik izbora</h2>
                     <div class="winner-info" id="winner-info">
                         <!-- Winner information will be populated -->
                     </div>
-                    <div class="celebration-effects">
-                        <div class="confetti"></div>
-                    </div>
                 </div>
             </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                    <i class="fas fa-check"></i>
+            <div class="modal-footer" style="justify-content: center;">
+                <button type="button" class="btn btn-primary modal-close">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20,6 9,17 4,12"></polyline>
+                    </svg>
                     Nastavi
                 </button>
             </div>
@@ -299,9 +337,370 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/election_day.css') }}">
+<style>
+/* Modern election day styles */
+.election-day {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--primary-50) 100%);
+}
+
+.election-header {
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-8) 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+.election-info h1 {
+    margin: 0 0 var(--space-2) 0;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.election-meta {
+    display: flex;
+    gap: var(--space-6);
+    color: var(--gray-600);
+    font-size: 0.875rem;
+}
+
+.election-controls {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.results-container {
+    padding: var(--space-8) 0;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+}
+
+@media (min-width: 768px) {
+    .results-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (min-width: 1024px) {
+    .results-grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.results-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.card-header {
+    padding: var(--space-6);
+    border-bottom: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.card-body {
+    padding: var(--space-6);
+}
+
+.simulation-status {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    margin: var(--space-6) 0;
+    padding: var(--space-6);
+}
+
+.progress-container {
+    margin: var(--space-4) 0;
+}
+
+.progress {
+    height: 1.5rem;
+    background: var(--gray-200);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.simulation-messages {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background: var(--gray-50);
+    border-radius: var(--radius);
+    padding: var(--space-3);
+}
+
+.simulation-message {
+    color: var(--gray-600);
+    margin-bottom: var(--space-1);
+}
+
+.results-chart-container {
+    height: 300px;
+    margin-bottom: var(--space-4);
+}
+
+.results-table-container {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: var(--space-3);
+    text-align: left;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.table th {
+    background: var(--gray-50);
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.party-name {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.party-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.statistics-section {
+    padding: var(--space-8) 0;
+}
+
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+}
+
+.stat-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--primary-100);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-600);
+}
+
+.stat-value {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--space-1);
+}
+
+.stat-label {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+}
+
+.city-results-grid {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.city-result-card {
+    background: var(--gray-50);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    border-left: 4px solid var(--primary-500);
+}
+
+.city-name {
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+}
+
+.city-turnout {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-2);
+}
+
+.city-winner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.winner-badge {
+    background: var(--success-500);
+    color: white;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.export-section {
+    padding: var(--space-8) 0;
+    background: white;
+    border-top: 1px solid var(--gray-200);
+}
+
+.export-actions {
+    text-align: center;
+}
+
+.export-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-top: var(--space-4);
+}
+
+/* Winner modal styles */
+.winner-modal .modal-body {
+    text-align: center;
+    padding: var(--space-8);
+}
+
+.winner-announcement h2 {
+    color: var(--primary-600);
+    margin-bottom: var(--space-6);
+}
+
+.winner-icon {
+    font-size: 4rem;
+    color: var(--warning-500);
+    margin-bottom: var(--space-4);
+}
+
+/* Range slider styles */
+.range-container {
+    margin: var(--space-4) 0;
+}
+
+.form-range {
+    width: 100%;
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: var(--radius);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.form-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-500);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.form-range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--primary-500);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.range-values {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-2);
+    font-size: 0.75rem;
+    color: var(--gray-600);
+}
+
+.current-value {
+    font-weight: 600;
+    color: var(--primary-600);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .election-meta {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+    
+    .export-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='js/election_simulation.js') }}"></script>
 {% endblock %}

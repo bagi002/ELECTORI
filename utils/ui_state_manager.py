@@ -3,7 +3,6 @@ UI State Manager - Manages UI element states based on implementation status
 """
 
 from typing import Dict, List, Optional
-from flask import session
 import json
 from pathlib import Path
 
@@ -106,6 +105,7 @@ class UIStateManager:
     def should_show_simulation_list(self) -> bool:
         """Determine if simulation list should be shown based on current context."""
         try:
+            from flask import session
             active_simulation_id = session.get('active_simulation_id')
         except RuntimeError:
             # Not in request context (e.g., during testing)
@@ -130,6 +130,7 @@ class UIStateManager:
     def get_context_for_template(self) -> Dict:
         """Get context data for templates."""
         try:
+            from flask import session
             active_simulation_id = session.get('active_simulation_id')
         except RuntimeError:
             # Not in request context (e.g., during testing)
