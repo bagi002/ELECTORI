@@ -360,7 +360,7 @@ def simulate_election(election_id):
         if not election:
             return jsonify({'error': 'Election not found'}), 404
         
-        if election.status != 'scheduled':
+        if election.status != ElectionStatus.SCHEDULED:
             return jsonify({'error': 'Election must be scheduled to simulate'}), 400
         
         data = request.get_json() or {}
