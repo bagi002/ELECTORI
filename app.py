@@ -25,10 +25,14 @@ def create_app(config_name=None):
     # Register blueprints
     from routes import simulation_routes, city_routes, party_routes
     from routes.support_routes import support_bp
+    from routes.election_routes import bp as election_bp
+    from routes.parliament_routes import bp as parliament_bp
     app.register_blueprint(simulation_routes.bp)
     app.register_blueprint(city_routes.bp)
     app.register_blueprint(party_routes.bp)
     app.register_blueprint(support_bp)
+    app.register_blueprint(election_bp)
+    app.register_blueprint(parliament_bp)
     
     # Main routes
     @app.route('/')
@@ -160,6 +164,23 @@ def create_app(config_name=None):
     def party_profile():
         """Party profile page."""
         return render_template("party_profile.html")
+    
+    # Task 4 Election System Routes
+    @app.route("/election-manager")
+    def election_manager():
+        """Election manager page."""
+        return render_template("election_manager.html")
+    
+    @app.route("/election-day")
+    def election_day():
+        """Election day simulation page."""
+        return render_template("election_day.html")
+    
+    # Task 5 Parliament System Routes
+    @app.route("/parliament")
+    def parliament():
+        """Parliament composition and management page."""
+        return render_template("parliament.html")
     
     # Task 3 Support System Routes
     @app.route("/support-matrix")

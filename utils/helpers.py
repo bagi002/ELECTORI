@@ -1,4 +1,20 @@
 # Helper utilities for ELECTORI application
+from flask import session, jsonify
+from models.simulation import Simulation
+
+def get_active_simulation():
+    """Get the currently active simulation from session"""
+    simulation_id = session.get('active_simulation_id')
+    if not simulation_id:
+        return None
+    
+    return Simulation.get_by_id(simulation_id)
+
+def format_api_response(data, status_code=200):
+    """Format API response consistently"""
+    response = jsonify(data)
+    response.status_code = status_code
+    return response
 
 def format_number(num):
     """Format number with thousands separator"""
